@@ -1,8 +1,10 @@
 import dotenv from "dotenv";
 import { defineConfig } from "prisma/config";
 
-// Load environment variables from .env.local file
-dotenv.config({ path: '.env.local' });
+// Load environment variables from .env.local file only in development
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: '.env.local' });
+}
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
