@@ -61,9 +61,16 @@ export default function TeamRaceTracker({ teams }: TeamRaceTrackerProps) {
               </div>
 
               {/* Progress bar */}
-              <div className="w-full bg-gray-200 rounded-full h-6 overflow-hidden">
+              <div
+                className="w-full bg-gray-200 rounded-full h-6 overflow-hidden"
+                role="progressbar"
+                aria-valuenow={Math.round(percentage)}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={`${team.name} fundraising progress`}
+              >
                 <div
-                  className="h-full rounded-full transition-all duration-300 flex items-center justify-end pr-2"
+                  className="h-full rounded-full flex items-center justify-end pr-2"
                   style={{
                     width: `${Math.max(percentage, 5)}%`, // Minimum 5% for visibility
                     backgroundColor: team.color,

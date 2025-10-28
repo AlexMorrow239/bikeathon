@@ -57,7 +57,12 @@ function DonationFormContent({ athleteId, athleteName }: DonationFormProps) {
     }
 
     if (amount < 1) {
-      setError('Please enter a valid amount');
+      setError('Please enter a donation amount of at least $1');
+      return;
+    }
+
+    if (amount > 999999) {
+      setError('Donation amount exceeds the maximum allowed ($999,999)');
       return;
     }
 
@@ -78,7 +83,11 @@ function DonationFormContent({ athleteId, athleteName }: DonationFormProps) {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create payment intent');
+        const errorData = await response.json().catch(() => null);
+        if (errorData?.error) {
+          throw new Error(errorData.error);
+        }
+        throw new Error('Unable to process donation. Please try again.');
       }
 
       const { client_secret } = await response.json();
@@ -86,7 +95,7 @@ function DonationFormContent({ athleteId, athleteName }: DonationFormProps) {
       // Confirm payment with Stripe
       const cardElement = elements.getElement(CardElement);
       if (!cardElement) {
-        throw new Error('Card element not found');
+        throw new Error('Unable to load payment form. Please refresh the page and try again.');
       }
 
       const result = await stripe.confirmCardPayment(client_secret, {
@@ -96,7 +105,25 @@ function DonationFormContent({ athleteId, athleteName }: DonationFormProps) {
       });
 
       if (result.error) {
-        setError(result.error.message || 'Payment failed');
+        // Provide user-friendly error messages for common Stripe errors
+        let errorMessage = result.error.message || 'Payment failed';
+
+        // Make common error messages more user-friendly
+        if (errorMessage.includes('card was declined')) {
+          errorMessage = 'Your card was declined. Please check your card details or try a different payment method.';
+        } else if (errorMessage.includes('incorrect_number')) {
+          errorMessage = 'The card number is incorrect. Please check and try again.';
+        } else if (errorMessage.includes('invalid_expiry')) {
+          errorMessage = 'The card expiry date is invalid. Please check and try again.';
+        } else if (errorMessage.includes('incorrect_cvc')) {
+          errorMessage = 'The security code (CVC) is incorrect. Please check and try again.';
+        } else if (errorMessage.includes('insufficient_funds')) {
+          errorMessage = 'Your card has insufficient funds. Please try a different payment method.';
+        } else if (errorMessage.includes('processing_error')) {
+          errorMessage = 'There was an issue processing your payment. Please try again in a moment.';
+        }
+
+        setError(errorMessage);
       } else if (result.paymentIntent.status === 'succeeded') {
         // Redirect to thank you page
         router.push(
@@ -104,7 +131,16 @@ function DonationFormContent({ athleteId, athleteName }: DonationFormProps) {
         );
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong');
+      // Handle network errors and other issues
+      if (err instanceof Error) {
+        if (err.message.includes('fetch')) {
+          setError('Connection error. Please check your internet connection and try again.');
+        } else {
+          setError(err.message);
+        }
+      } else {
+        setError('Something went wrong. Please try again or contact support.');
+      }
     } finally {
       setLoading(false);
     }

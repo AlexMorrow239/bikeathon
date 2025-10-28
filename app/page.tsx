@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Activity, Heart, Users } from 'lucide-react';
+import { Activity, Heart, Users, AlertTriangle, RefreshCw } from 'lucide-react';
 import AthleteCard from '@/components/AthleteCard';
 import AthleteSearch from '@/components/AthleteSearch';
 import TeamRaceTracker from '@/components/TeamRaceTracker';
@@ -47,26 +47,52 @@ export default function Home() {
   const [athletes, setAthletes] = useState<Athlete[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [retrying, setRetrying] = useState(false);
 
-  // Fetch all data on mount
+  // Fetch all data
+  const fetchData = async () => {
+    try {
+      setError(null);
+      const [statsRes, teamsRes, athletesRes] = await Promise.all([
+        fetch('/api/stats'),
+        fetch('/api/teams'),
+        fetch('/api/athletes')
+      ]);
+
+      // Check if any requests failed
+      if (!statsRes.ok || !teamsRes.ok || !athletesRes.ok) {
+        throw new Error('Failed to load data. Please try again.');
+      }
+
+      const [statsData, teamsData, athletesData] = await Promise.all([
+        statsRes.json(),
+        teamsRes.json(),
+        athletesRes.json()
+      ]);
+
+      setStats(statsData);
+      setTeams(teamsData);
+      setAthletes(athletesData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please refresh the page.');
+    } finally {
+      setLoading(false);
+      setRetrying(false);
+    }
+  };
+
+  // Fetch data on mount
   useEffect(() => {
-    Promise.all([
-      fetch('/api/stats').then(r => r.json()),
-      fetch('/api/teams').then(r => r.json()),
-      fetch('/api/athletes').then(r => r.json())
-    ])
-      .then(([statsData, teamsData, athletesData]) => {
-        setStats(statsData);
-        setTeams(teamsData);
-        setAthletes(athletesData);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    fetchData();
   }, []);
+
+  // Retry function
+  const handleRetry = () => {
+    setRetrying(true);
+    setLoading(true);
+    fetchData();
+  };
 
   // Filter athletes based on search query
   const filteredAthletes = useMemo(() => {
@@ -78,16 +104,72 @@ export default function Home() {
     );
   }, [athletes, searchQuery]);
 
-  if (loading) {
+  // Loading skeleton
+  if (loading && !retrying) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner />
+      <div className="min-h-screen bg-gray-50">
+        {/* Hero Section Skeleton */}
+        <section className="bg-gradient-to-b from-blue-600 to-blue-700 text-white py-16 px-4">
+          <div className="max-w-7xl mx-auto text-center">
+            <div className="flex justify-center mb-4">
+              <Activity className="w-16 h-16 animate-pulse" />
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Bikeathon Fundraiser
+            </h1>
+            <p className="text-2xl mb-8">
+              $1 = 1 Mile • Every Dollar Counts!
+            </p>
+            {/* Stats skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="bg-white/10 backdrop-blur rounded-lg p-4">
+                  <div className="h-9 bg-white/20 rounded animate-pulse mb-2"></div>
+                  <div className="h-4 bg-white/20 rounded animate-pulse w-20 mx-auto"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Content area with spinner */}
+        <div className="flex items-center justify-center py-20">
+          <LoadingSpinner />
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error && !retrying) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="max-w-md text-center">
+          <AlertTriangle className="w-16 h-16 text-amber-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-2">Unable to Load Data</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={handleRetry}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Retrying indicator */}
+      {retrying && (
+        <div className="fixed top-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 z-50">
+          <LoadingSpinner />
+          <span>Refreshing data...</span>
+        </div>
+      )}
+
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-blue-600 to-blue-700 text-white py-16 px-4">
         <div className="max-w-7xl mx-auto text-center">

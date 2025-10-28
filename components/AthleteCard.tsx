@@ -96,7 +96,7 @@ export default function AthleteCard({ athlete }: AthleteCardProps) {
             {formatCurrency(raised)}
           </span>
         </div>
-        <ProgressBar percentage={progress} />
+        <ProgressBar percentage={progress} label={`${athlete.name}'s fundraising progress`} />
         <p className="text-xs text-gray-500 mt-1">
           {progress}% of goal • {Math.floor(raised)} miles committed
         </p>
@@ -105,7 +105,7 @@ export default function AthleteCard({ athlete }: AthleteCardProps) {
       {/* Donate button */}
       <Link
         href={`/donate/${athlete.slug}`}
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+        className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
       >
         Donate
         <ChevronRight className="w-4 h-4" />
