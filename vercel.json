@@ -1,5 +1,5 @@
 {
-  "buildCommand": "bunx prisma generate && bunx prisma db push --accept-data-loss && next build",
+  "buildCommand": "bunx prisma migrate reset -f && next build",
   "installCommand": "bun install",
   "framework": "nextjs",
   "outputDirectory": ".next",

@@ -11,7 +11,6 @@
       "slug": "john-smith",
       "team": "Thunder Riders",
       "bio": "Riding for a great cause! Every mile counts.",
-      "photoUrl": "/images/athletes/john-smith.jpg",
       "goal": 500
     },
     {
@@ -27,7 +26,6 @@
       "slug": "michael-chen",
       "team": "Thunder Riders",
       "bio": "100 miles? Challenge accepted! Let's do this!",
-      "photoUrl": "/images/athletes/michael-chen.jpg",
       "goal": 1000
     },
     {
@@ -35,7 +33,6 @@
       "slug": "emily-davis",
       "team": "Wind Breakers",
       "bio": "Breaking barriers one mile at a time.",
-      "photoUrl": "/images/athletes/emily-davis.jpg",
       "goal": 600
     },
     {
@@ -43,7 +40,6 @@
       "slug": "david-wilson",
       "team": "Wind Breakers",
       "bio": "Wind in my hair, purpose in my heart!",
-      "photoUrl": "/images/athletes/david-wilson.jpg",
       "goal": 500
     },
     {
@@ -51,7 +47,6 @@
       "slug": "lisa-anderson",
       "team": "Wind Breakers",
       "bio": "Chasing the wind and raising funds!",
-      "photoUrl": "/images/athletes/lisa-anderson.jpg",
       "goal": 800
     },
     {
@@ -59,7 +54,6 @@
       "slug": "james-martinez",
       "team": "Chain Gang",
       "bio": "Linked together for a common cause!",
-      "photoUrl": "/images/athletes/james-martinez.jpg",
       "goal": 700
     },
     {
@@ -75,7 +69,6 @@
       "slug": "robert-taylor",
       "team": "Chain Gang",
       "bio": "Stronger together, riding for change!",
-      "photoUrl": "/images/athletes/robert-taylor.jpg",
       "goal": 900
     },
     {
@@ -83,7 +76,6 @@
       "slug": "amanda-white",
       "team": "Velocity Squad",
       "bio": "Speed meets purpose on this journey!",
-      "photoUrl": "/images/athletes/amanda-white.jpg",
       "goal": 650
     },
     {
@@ -91,7 +83,6 @@
       "slug": "kevin-brown",
       "team": "Velocity Squad",
       "bio": "Fast wheels, big hearts, great cause!",
-      "photoUrl": "/images/athletes/kevin-brown.jpg",
       "goal": 750
     },
     {
@@ -99,7 +90,6 @@
       "slug": "jessica-lee",
       "team": "Velocity Squad",
       "bio": "Accelerating toward our fundraising goals!",
-      "photoUrl": "/images/athletes/jessica-lee.jpg",
       "goal": 1200
     }
   ]
