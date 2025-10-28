@@ -2,7 +2,7 @@ interface ProgressBarProps {
   percentage: number;
 }
 
-export function ProgressBar({ percentage }: ProgressBarProps) {
+export default function ProgressBar({ percentage }: ProgressBarProps) {
   return (
     <div className="w-full bg-gray-200 rounded-full h-2">
       <div

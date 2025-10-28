@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { stripe, formatAmountForStripe } from '@/lib/stripe';
+import { stripe, formatAmountForStripe } from '@/lib/stripe-server';
 import prisma from '@/lib/prisma';
 
 export async function POST(req: Request) {

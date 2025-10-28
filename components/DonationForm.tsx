@@ -1,17 +1,17 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import ErrorMessage from '@/components/ErrorMessage';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import { getStripe } from '@/lib/stripe-client';
+import { dollarsToMiles, formatCurrency } from '@/lib/utils';
 import {
-  Elements,
   CardElement,
-  useStripe,
+  Elements,
   useElements,
+  useStripe,
 } from '@stripe/react-stripe-js';
-import { getStripe } from '@/lib/stripe';
-import { LoadingSpinner } from '@/components/LoadingSpinner';
-import { ErrorMessage } from '@/components/ErrorMessage';
-import { formatCurrency, dollarsToMiles } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 interface DonationFormProps {
   athleteId: number;

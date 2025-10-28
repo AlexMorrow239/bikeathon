@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma';
-import { constructWebhookEvent, formatAmountFromStripe } from '@/lib/stripe';
+import { constructWebhookEvent, formatAmountFromStripe } from '@/lib/stripe-server';
 import Decimal from 'decimal.js';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';

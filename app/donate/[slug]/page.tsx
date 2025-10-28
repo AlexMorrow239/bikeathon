@@ -1,9 +1,9 @@
-import { notFound } from 'next/navigation';
-import prisma from '@/lib/prisma';
 import { DonationForm } from '@/components/DonationForm';
-import { ProgressBar } from '@/components/ProgressBar';
-import { formatCurrency, dollarsToMiles } from '@/lib/utils';
+import ProgressBar from '@/components/ProgressBar';
+import prisma from '@/lib/prisma';
+import { dollarsToMiles, formatCurrency } from '@/lib/utils';
 import Decimal from 'decimal.js';
+import { notFound } from 'next/navigation';
 
 interface DonationPageProps {
   params: Promise<{
