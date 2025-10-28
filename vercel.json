@@ -3,20 +3,6 @@
   "installCommand": "bun install",
   "framework": "nextjs",
   "outputDirectory": ".next",
-  "env": {
-    "DATABASE_URL": "@database-url",
-    "PRISMA_DATABASE_URL": "@prisma-database-url",
-    "STRIPE_SECRET_KEY": "@stripe-secret-key",
-    "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "@stripe-publishable-key",
-    "STRIPE_WEBHOOK_SECRET": "@stripe-webhook-secret",
-    "NEXT_PUBLIC_BASE_URL": "@next-public-base-url"
-  },
-  "build": {
-    "env": {
-      "DATABASE_URL": "@database-url",
-      "PRISMA_DATABASE_URL": "@prisma-database-url"
-    }
-  },
   "functions": {
     "app/api/webhooks/stripe/route.ts": {
       "maxDuration": 10
