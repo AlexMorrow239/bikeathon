@@ -17,7 +17,15 @@ export default function ProgressBar({ percentage, label }: ProgressBarProps) {
       aria-label={label || `Progress: ${clampedPercentage}%`}
     >
       <div
-        className="bg-blue-600 h-2 rounded-full"
+        className={`h-2 rounded-full transition-all duration-500 ${
+          clampedPercentage >= 100
+            ? 'bg-success-500'
+            : clampedPercentage >= 75
+            ? 'bg-primary-400'
+            : clampedPercentage >= 50
+            ? 'bg-primary-500'
+            : 'bg-primary-600'
+        }`}
         style={{
           width: `${clampedPercentage}%`,
           minWidth: clampedPercentage > 0 ? '2px' : '0'

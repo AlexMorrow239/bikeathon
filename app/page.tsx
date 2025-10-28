@@ -109,7 +109,7 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-gray-50">
         {/* Hero Section Skeleton */}
-        <section className="bg-gradient-to-b from-blue-600 to-blue-700 text-white py-16 px-4">
+        <section className="bg-gradient-to-b from-primary-500 to-primary-600 text-white py-16 px-4">
           <div className="max-w-7xl mx-auto text-center">
             <div className="flex justify-center mb-4">
               <Activity className="w-16 h-16 animate-pulse" />
@@ -145,12 +145,12 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div className="max-w-md text-center">
-          <AlertTriangle className="w-16 h-16 text-amber-500 mx-auto mb-4" />
+          <AlertTriangle className="w-16 h-16 text-warning-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold mb-2">Unable to Load Data</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={handleRetry}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             Try Again
@@ -164,14 +164,14 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       {/* Retrying indicator */}
       {retrying && (
-        <div className="fixed top-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 z-50">
+        <div className="fixed top-4 right-4 bg-primary-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 z-50">
           <LoadingSpinner />
           <span>Refreshing data...</span>
         </div>
       )}
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-blue-600 to-blue-700 text-white py-16 px-4">
+      <section className="bg-gradient-to-b from-primary-500 to-primary-600 text-white py-16 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <div className="flex justify-center mb-4">
             <Activity className="w-16 h-16" />
@@ -259,13 +259,13 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8 px-4 mt-12">
+      <footer className="bg-secondary-700 text-white py-8 px-4 mt-12">
         <div className="max-w-7xl mx-auto text-center">
           <p className="flex items-center justify-center gap-2 mb-2">
-            <Heart className="w-4 h-4 text-red-500" />
+            <Heart className="w-4 h-4 text-primary-400" />
             Thank you for supporting our bikeathon!
           </p>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-secondary-200">
             Every donation helps our athletes reach their goals and supports a great cause.
           </p>
         </div>

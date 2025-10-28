@@ -35,7 +35,7 @@ export default function AthleteCard({ athlete }: AthleteCardProps) {
     .slice(0, 2);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
+    <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-gray-300 transition-all">
       {/* Team affiliation bar */}
       {athlete.team && (
         <div
@@ -105,7 +105,7 @@ export default function AthleteCard({ athlete }: AthleteCardProps) {
       {/* Donate button */}
       <Link
         href={`/donate/${athlete.slug}`}
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
+        className="w-full bg-primary-500 text-white py-2 px-4 rounded-lg hover:bg-primary-600 active:bg-primary-700 transition-colors flex items-center justify-center gap-2 font-medium"
       >
         Donate
         <ChevronRight className="w-4 h-4" />

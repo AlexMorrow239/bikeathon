@@ -21,11 +21,11 @@ function ThankYouContent() {
 
   if (!amount || !athlete || !miles) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Thank You!</h1>
-          <p className="mb-6">Your donation has been processed.</p>
-          <Link href="/" className="text-blue-600 underline">
+          <h1 className="text-2xl font-bold mb-4 text-gray-900">Thank You!</h1>
+          <p className="mb-6 text-gray-600">Your donation has been processed.</p>
+          <Link href="/" className="text-primary-600 hover:text-primary-700 underline transition-colors">
             Return to homepage
           </Link>
         </div>
@@ -34,15 +34,15 @@ function ThankYouContent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center max-w-md">
-        <h1 className="text-3xl font-bold mb-6">Thank You! 🎉</h1>
+        <h1 className="text-3xl font-bold mb-6 text-gray-900">Thank You!</h1>
 
-        <div className="mb-8 p-6 bg-green-50 rounded-lg">
-          <p className="text-2xl font-semibold mb-2">
+        <div className="mb-8 p-6 bg-success-50 border border-success-200 rounded-lg">
+          <p className="text-2xl font-semibold mb-2 text-gray-900">
             You donated {formatCurrency(parseFloat(amount))}
           </p>
-          <p className="text-xl text-green-700">
+          <p className="text-xl text-success-700 font-medium">
             = {miles} miles for {decodeURIComponent(athlete)}!
           </p>
         </div>
@@ -54,7 +54,7 @@ function ThankYouContent() {
 
         <Link
           href="/"
-          className="inline-block px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="inline-block px-6 py-3 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600 active:bg-secondary-700 transition-colors font-medium"
         >
           Return to Homepage
         </Link>

@@ -46,7 +46,7 @@ export default function TeamRaceTracker({ teams }: TeamRaceTrackerProps) {
                   <span className="font-medium">
                     {team.name}
                     {index === 0 && raised > 0 && (
-                      <Trophy className="inline-block w-4 h-4 ml-1 text-yellow-500" />
+                      <Trophy className="inline-block w-4 h-4 ml-1 text-primary-500" />
                     )}
                   </span>
                   {team._count && (

@@ -34,12 +34,16 @@ export default async function DonatePage({ params }: DonationPageProps) {
   const progressPercentage = Math.min((totalRaised / goal) * 100, 100);
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="min-h-screen p-8 bg-gray-50">
       <div className="max-w-2xl mx-auto">
         {/* Athlete Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">{athlete.name}</h1>
-          <p className="text-lg text-gray-600">
+          <h1 className="text-3xl font-bold mb-2 text-gray-900">{athlete.name}</h1>
+          <p className="text-lg text-gray-600 flex items-center gap-2">
+            <span
+              className="w-3 h-3 rounded-full inline-block"
+              style={{ backgroundColor: athlete.team.color }}
+            />
             Team {athlete.team.name}
           </p>
 
@@ -62,8 +66,8 @@ export default async function DonatePage({ params }: DonationPageProps) {
         </div>
 
         {/* Donation Form */}
-        <div className="border rounded-lg p-6">
-          <h2 className="text-2xl font-semibold mb-4">Make a Donation</h2>
+        <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+          <h2 className="text-2xl font-semibold mb-4 text-gray-900">Make a Donation</h2>
           <p className="text-gray-600 mb-4">
             Every dollar you donate = 1 mile {athlete.name} will ride!
           </p>

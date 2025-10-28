@@ -1,6 +1,20 @@
 import { PrismaClient } from '@prisma/client'
 import seedData from './seed-data.json'
 
+type AthleteData = {
+  name: string
+  slug: string
+  team: string
+  bio: string
+  goal: number
+  photoUrl?: string
+}
+
+const typedSeedData = seedData as {
+  teams: Array<{ name: string; color: string }>
+  athletes: AthleteData[]
+}
+
 const prisma = new PrismaClient()
 
 async function main() {
@@ -14,7 +28,7 @@ async function main() {
 
   // Seed teams
   console.log('Seeding teams...')
-  for (const team of seedData.teams) {
+  for (const team of typedSeedData.teams) {
     await prisma.team.create({
       data: {
         name: team.name,
@@ -25,7 +39,7 @@ async function main() {
 
   // Seed athletes
   console.log('Seeding athletes...')
-  for (const athlete of seedData.athletes) {
+  for (const athlete of typedSeedData.athletes) {
     const team = await prisma.team.findUnique({
       where: { name: athlete.team }
     })

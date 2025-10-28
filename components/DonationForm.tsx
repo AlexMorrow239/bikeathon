@@ -159,10 +159,10 @@ function DonationFormContent({ athleteId, athleteName }: DonationFormProps) {
               key={preset}
               type="button"
               onClick={() => handleAmountSelect(preset)}
-              className={`p-3 border rounded ${
+              className={`p-3 border rounded transition-colors ${
                 amount === preset && !isCustom
-                  ? 'border-blue-500 bg-blue-50'
-                  : 'border-gray-300'
+                  ? 'border-primary-500 bg-primary-50 text-primary-700 font-medium'
+                  : 'border-gray-300 hover:border-gray-400'
               }`}
             >
               ${preset}
@@ -175,7 +175,7 @@ function DonationFormContent({ athleteId, athleteName }: DonationFormProps) {
             placeholder="Custom amount"
             value={customAmount}
             onChange={handleCustomAmountChange}
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
             min="1"
             step="1"
           />
@@ -184,9 +184,9 @@ function DonationFormContent({ athleteId, athleteName }: DonationFormProps) {
 
       {/* Miles Display */}
       {amount > 0 && (
-        <div className="p-3 bg-green-50 border border-green-300 rounded">
-          <p className="text-green-800">
-            Your ${formatCurrency(amount)} donation = {dollarsToMiles(amount)} miles!
+        <div className="p-3 bg-success-50 border border-success-300 rounded">
+          <p className="text-success-700 font-medium">
+            Your {formatCurrency(amount)} donation = {dollarsToMiles(amount)} miles!
           </p>
         </div>
       )}
@@ -196,15 +196,15 @@ function DonationFormContent({ athleteId, athleteName }: DonationFormProps) {
         <label className="block text-sm font-medium mb-2">
           Card Information
         </label>
-        <div className="p-3 border rounded">
+        <div className="p-3 border border-gray-300 rounded focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-primary-500 transition-all">
           <CardElement
             options={{
               style: {
                 base: {
                   fontSize: '16px',
-                  color: '#424770',
+                  color: '#111827',
                   '::placeholder': {
-                    color: '#aab7c4',
+                    color: '#9ca3af',
                   },
                 },
               },
@@ -220,20 +220,14 @@ function DonationFormContent({ athleteId, athleteName }: DonationFormProps) {
       <button
         type="submit"
         disabled={!stripe || loading || amount < 1}
-        className={`w-full p-3 rounded font-medium ${
+        className={`w-full p-3 rounded font-medium transition-colors ${
           loading || !stripe || amount < 1
-            ? 'bg-gray-300 cursor-not-allowed'
-            : 'bg-blue-600 text-white hover:bg-blue-700'
+            ? 'bg-gray-300 cursor-not-allowed text-gray-500'
+            : 'bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700'
         }`}
       >
         {loading ? <LoadingSpinner /> : `Donate ${formatCurrency(amount)}`}
       </button>
-
-      {/* Test Card Info */}
-      <div className="text-xs text-gray-500">
-        <p>Test card: 4242 4242 4242 4242</p>
-        <p>Use any future date and any 3-digit CVC</p>
-      </div>
     </form>
   );
 }
