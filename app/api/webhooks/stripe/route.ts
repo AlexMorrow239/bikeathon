@@ -4,6 +4,23 @@ import Decimal from 'decimal.js';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 
+// Handle OPTIONS requests for CORS preflight
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, stripe-signature',
+    }
+  });
+}
+
+// Handle HEAD requests that some infrastructure might send
+export async function HEAD() {
+  return new Response(null, { status: 200 });
+}
+
 // Stripe requires raw body for webhook signature verification
 export async function POST(req: Request) {
   const body = await req.text();
