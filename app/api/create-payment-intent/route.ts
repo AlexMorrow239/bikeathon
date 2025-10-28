@@ -1,39 +1,67 @@
-import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server';
+import { stripe, formatAmountForStripe } from '@/lib/stripe';
+import prisma from '@/lib/prisma';
 
-// This is a stub for Phase 2 - full Stripe integration will be added later
 export async function POST(req: Request) {
   try {
-    const { amount, athleteId } = await req.json()
+    const { amount, athleteId } = await req.json();
 
+    // Validate inputs
     if (!amount || !athleteId) {
       return NextResponse.json(
         { error: 'Missing required fields: amount and athleteId' },
         { status: 400 }
-      )
+      );
     }
 
-    // Validate amount is positive
-    if (amount <= 0) {
+    if (amount < 1) {
       return NextResponse.json(
-        { error: 'Amount must be greater than 0' },
+        { error: 'Amount must be at least $1' },
         { status: 400 }
-      )
+      );
     }
 
-    // TODO: In Phase 2, integrate with Stripe to create actual payment intent
-    // For now, return a mock response
+    if (amount > 999999) {
+      return NextResponse.json(
+        { error: 'Amount exceeds maximum allowed' },
+        { status: 400 }
+      );
+    }
+
+    // Verify athlete exists
+    const athlete = await prisma.athlete.findUnique({
+      where: { id: athleteId },
+      select: { id: true, name: true },
+    });
+
+    if (!athlete) {
+      return NextResponse.json(
+        { error: 'Athlete not found' },
+        { status: 404 }
+      );
+    }
+
+    // Create Stripe payment intent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: formatAmountForStripe(amount), // Convert dollars to cents
+      currency: 'usd',
+      metadata: {
+        athlete_id: athleteId.toString(),
+        athlete_name: athlete.name,
+      },
+      description: `Donation for ${athlete.name} - Bikeathon Fundraiser`,
+    });
+
     return NextResponse.json({
-      clientSecret: 'mock_client_secret_' + Date.now(),
-      paymentIntentId: 'mock_pi_' + Date.now(),
+      client_secret: paymentIntent.client_secret,
+      payment_intent_id: paymentIntent.id,
       amount: amount,
-      athleteId: athleteId,
-      message: 'This is a stub implementation. Stripe integration coming in Phase 2.'
-    })
+    });
   } catch (error) {
-    console.error('Error creating payment intent:', error)
+    console.error('Error creating payment intent:', error);
     return NextResponse.json(
       { error: 'Failed to create payment intent' },
       { status: 500 }
-    )
+    );
   }
 }
