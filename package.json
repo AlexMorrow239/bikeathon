@@ -10,8 +10,12 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:migrate:create": "prisma migrate dev --create-only",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
+    "db:reset": "prisma migrate reset",
+    "vercel:build": "prisma generate && prisma migrate deploy && next build",
     "postinstall": "prisma generate"
   },
   "prisma": {
