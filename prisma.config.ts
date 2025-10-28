@@ -1,5 +1,5 @@
-import { defineConfig } from "prisma/config";
 import dotenv from "dotenv";
+import { defineConfig } from "prisma/config";
 
 // Load environment variables from .env.local file
 dotenv.config({ path: '.env.local' });
@@ -11,6 +11,6 @@ export default defineConfig({
   },
   engine: "classic",
   datasource: {
-    url: process.env.DATABASE_URL!,
+    url: process.env.PRISMA_DATABASE_URL!,
   },
 });

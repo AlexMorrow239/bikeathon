@@ -45,7 +45,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("PRISMA_DATABASE_URL")
 }
 
 model Team {
@@ -404,7 +404,7 @@ const recentDonations = await prisma.donation.findMany({
 # Database - PostgreSQL connection string
 # For local: postgresql://user:password@localhost:5432/bikeathon
 # For production: Use connection string from provider (Supabase, Neon, etc.)
-DATABASE_URL="postgresql://user:password@localhost:5432/bikeathon"
+PRISMA_DATABASE_URL="postgresql://user:password@localhost:5432/bikeathon"
 
 # Stripe Configuration
 STRIPE_SECRET_KEY=sk_test_...
@@ -479,7 +479,7 @@ npm run dev
 // prisma/schema.prisma for production
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  url       = env("PRISMA_DATABASE_URL")
   directUrl = env("DIRECT_URL") // For migrations
 }
 ```
