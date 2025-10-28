@@ -1,0 +1,106 @@
+{
+  "teams": [
+    { "name": "Thunder Riders", "color": "#FFD700" },
+    { "name": "Wind Breakers", "color": "#4169E1" },
+    { "name": "Chain Gang", "color": "#32CD32" },
+    { "name": "Velocity Squad", "color": "#FF6347" }
+  ],
+  "athletes": [
+    {
+      "name": "John Smith",
+      "slug": "john-smith",
+      "team": "Thunder Riders",
+      "bio": "Riding for a great cause! Every mile counts.",
+      "photoUrl": "/images/athletes/john-smith.jpg",
+      "goal": 500
+    },
+    {
+      "name": "Sarah Johnson",
+      "slug": "sarah-johnson",
+      "team": "Thunder Riders",
+      "bio": "Excited to pedal for purpose and make a difference!",
+      "photoUrl": "/images/athletes/sarah-johnson.jpg",
+      "goal": 750
+    },
+    {
+      "name": "Michael Chen",
+      "slug": "michael-chen",
+      "team": "Thunder Riders",
+      "bio": "100 miles? Challenge accepted! Let's do this!",
+      "photoUrl": "/images/athletes/michael-chen.jpg",
+      "goal": 1000
+    },
+    {
+      "name": "Emily Davis",
+      "slug": "emily-davis",
+      "team": "Wind Breakers",
+      "bio": "Breaking barriers one mile at a time.",
+      "photoUrl": "/images/athletes/emily-davis.jpg",
+      "goal": 600
+    },
+    {
+      "name": "David Wilson",
+      "slug": "david-wilson",
+      "team": "Wind Breakers",
+      "bio": "Wind in my hair, purpose in my heart!",
+      "photoUrl": "/images/athletes/david-wilson.jpg",
+      "goal": 500
+    },
+    {
+      "name": "Lisa Anderson",
+      "slug": "lisa-anderson",
+      "team": "Wind Breakers",
+      "bio": "Chasing the wind and raising funds!",
+      "photoUrl": "/images/athletes/lisa-anderson.jpg",
+      "goal": 800
+    },
+    {
+      "name": "James Martinez",
+      "slug": "james-martinez",
+      "team": "Chain Gang",
+      "bio": "Linked together for a common cause!",
+      "photoUrl": "/images/athletes/james-martinez.jpg",
+      "goal": 700
+    },
+    {
+      "name": "Maria Garcia",
+      "slug": "maria-garcia",
+      "team": "Chain Gang",
+      "bio": "Every chain link represents a mile of hope.",
+      "photoUrl": "/images/athletes/maria-garcia.jpg",
+      "goal": 550
+    },
+    {
+      "name": "Robert Taylor",
+      "slug": "robert-taylor",
+      "team": "Chain Gang",
+      "bio": "Stronger together, riding for change!",
+      "photoUrl": "/images/athletes/robert-taylor.jpg",
+      "goal": 900
+    },
+    {
+      "name": "Amanda White",
+      "slug": "amanda-white",
+      "team": "Velocity Squad",
+      "bio": "Speed meets purpose on this journey!",
+      "photoUrl": "/images/athletes/amanda-white.jpg",
+      "goal": 650
+    },
+    {
+      "name": "Kevin Brown",
+      "slug": "kevin-brown",
+      "team": "Velocity Squad",
+      "bio": "Fast wheels, big hearts, great cause!",
+      "photoUrl": "/images/athletes/kevin-brown.jpg",
+      "goal": 750
+    },
+    {
+      "name": "Jessica Lee",
+      "slug": "jessica-lee",
+      "team": "Velocity Squad",
+      "bio": "Accelerating toward our fundraising goals!",
+      "photoUrl": "/images/athletes/jessica-lee.jpg",
+      "goal": 1200
+    }
+  ]
+}

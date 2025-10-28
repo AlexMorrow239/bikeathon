@@ -34,38 +34,58 @@ Athletes are pre-registered in the system (no self-signup). Each athlete belongs
 - Team totals (sum of team members' fundraising)
 - Overall bikeathon total (sum of all donations)
 
-### Database Schema (SQLite)
+### Database Schema (PostgreSQL via Prisma)
 
-```sql
--- Teams table
-teams (
-  id INTEGER PRIMARY KEY,
-  name TEXT UNIQUE NOT NULL,
-  color TEXT, -- For visual representation in race tracker
-  total_raised DECIMAL DEFAULT 0 -- Cached total for performance
-)
+```prisma
+// prisma/schema.prisma
 
--- Athletes table
-athletes (
-  id INTEGER PRIMARY KEY,
-  slug TEXT UNIQUE NOT NULL, -- URL-friendly name for /donate/[slug]
-  name TEXT NOT NULL,
-  team_id INTEGER REFERENCES teams(id),
-  bio TEXT, -- Optional personal message/story
-  photo_url TEXT, -- Optional athlete photo
-  total_raised DECIMAL DEFAULT 0, -- Cached total for performance
-  goal DECIMAL DEFAULT 500, -- Individual fundraising goal
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+generator client {
+  provider = "prisma-client-js"
+}
 
--- Donations table (minimal tracking for totals only)
-donations (
-  id INTEGER PRIMARY KEY,
-  athlete_id INTEGER REFERENCES athletes(id),
-  amount DECIMAL NOT NULL,
-  stripe_payment_intent_id TEXT UNIQUE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Team {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  color       String    // Hex color for visual representation
+  totalRaised Decimal   @default(0) @db.Decimal(10, 2)
+  athletes    Athlete[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Athlete {
+  id          Int        @id @default(autoincrement())
+  slug        String     @unique // URL-friendly name for /donate/[slug]
+  name        String
+  bio         String?    // Optional personal message
+  photoUrl    String?    // Optional athlete photo
+  totalRaised Decimal    @default(0) @db.Decimal(10, 2)
+  goal        Decimal    @default(500) @db.Decimal(10, 2)
+  teamId      Int
+  team        Team       @relation(fields: [teamId], references: [id])
+  donations   Donation[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([slug])
+  @@index([teamId])
+}
+
+model Donation {
+  id                    Int      @id @default(autoincrement())
+  amount                Decimal  @db.Decimal(10, 2)
+  stripePaymentIntentId String   @unique
+  athleteId             Int
+  athlete               Athlete  @relation(fields: [athleteId], references: [id])
+  createdAt             DateTime @default(now())
+
+  @@index([athleteId])
+}
 ```
 
 ### Project Structure
@@ -81,6 +101,7 @@ donations (
       /stripe/route.ts     // Stripe webhook to confirm payment & update DB
     /athletes/route.ts     // GET all athletes with search capability
     /teams/route.ts        // GET teams with current totals for race visual
+    /create-payment-intent/route.ts // POST to create Stripe payment intent
 
 /components
   /AthleteSearch.tsx       // Real-time search filtering
@@ -90,17 +111,86 @@ donations (
   /ProgressBar.tsx         // Visual indicator of fundraising progress
 
 /lib
-  /db.ts                   // SQLite connection & query functions
+  /prisma.ts              // Prisma client singleton
   /stripe.ts              // Stripe client configuration
   /utils.ts               // Helper functions (formatting, calculations)
 
+/prisma
+  /schema.prisma          // Database schema
+  /seed.ts                // Seed script for initial data
+  /migrations/            // Database migration history
+
 /scripts
-  /seed-database.ts       // Import initial athlete/team data from JSON
+  /update-totals.ts       // Utility script to recalculate all totals
 ```
 
 ### Key Implementation Details
 
-#### 1. Homepage (`/app/page.tsx`)
+#### 1. Database Setup with Prisma
+
+**Prisma Client Singleton (`/lib/prisma.ts`):**
+
+```typescript
+import { PrismaClient } from '@prisma/client'
+
+const globalForPrisma = global as unknown as { prisma: PrismaClient }
+
+export const prisma = globalForPrisma.prisma || new PrismaClient()
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+
+export default prisma
+```
+
+**Seed Script (`/prisma/seed.ts`):**
+
+```typescript
+import { PrismaClient } from '@prisma/client'
+import { teams, athletes } from './seed-data.json'
+
+const prisma = new PrismaClient()
+
+async function main() {
+  // Clear existing data
+  await prisma.donation.deleteMany()
+  await prisma.athlete.deleteMany()
+  await prisma.team.deleteMany()
+
+  // Seed teams
+  for (const team of teams) {
+    await prisma.team.create({
+      data: {
+        name: team.name,
+        color: team.color
+      }
+    })
+  }
+
+  // Seed athletes
+  for (const athlete of athletes) {
+    const team = await prisma.team.findUnique({
+      where: { name: athlete.team }
+    })
+
+    await prisma.athlete.create({
+      data: {
+        name: athlete.name,
+        slug: athlete.slug,
+        bio: athlete.bio,
+        photoUrl: athlete.photoUrl,
+        teamId: team!.id,
+        goal: athlete.goal || 500
+      }
+    })
+  }
+}
+
+main()
+  .catch((e) => console.error(e))
+  .finally(async () => await prisma.$disconnect())
+```
+
+#### 2. Homepage (`/app/page.tsx`)
 
 The landing page serves as the donation hub with three main sections:
 
@@ -126,29 +216,29 @@ The landing page serves as the donation hub with three main sections:
   - Current amount raised / goal
   - "Donate" button linking to their page
 
-#### 2. Athlete Donation Page (`/donate/[slug]`)
+#### 3. Athlete Donation Page (`/donate/[slug]`)
 
 Individual donation page flow:
 
-**Athlete Information Display:**
+**Data Fetching:**
 
-- Large photo (if available) or placeholder
-- Name and team
-- Bio/personal message
-- Progress bar: "$X raised of $Y goal = Z miles"
+```typescript
+// Server component to fetch athlete data
+import prisma from '@/lib/prisma'
 
-**Donation Form:**
+async function getAthlete(slug: string) {
+  return await prisma.athlete.findUnique({
+    where: { slug },
+    include: { team: true }
+  })
+}
+```
 
-- Preset amounts: $25 (25 miles), $50 (50 miles), $100 (100 miles)
-- Custom amount input with validation
-- Embedded Stripe payment element
-- "Donate" button with amount confirmation
-
-**Implementation:**
+**Donation Form Implementation:**
 
 ```typescript
 // Key flow:
-1. Load athlete data from API
+1. Load athlete data with Prisma
 2. Initialize Stripe Elements
 3. On amount selection → update UI to show "Donate $X = X miles"
 4. On submit → create payment intent via API
@@ -156,69 +246,142 @@ Individual donation page flow:
 6. On success → redirect to thank you page
 ```
 
-#### 3. Stripe Integration
+#### 4. API Routes with Prisma
 
-**Payment Flow:**
-
-```typescript
-// Frontend (DonationForm component)
-- Use @stripe/react-stripe-js for embedded payments
-- Create payment intent with athlete_id in metadata
-- Handle card validation and errors inline
-
-// Backend (/api/webhooks/stripe/route.ts)
-POST endpoint receiving Stripe webhooks:
-1. Verify webhook signature
-2. Extract payment_intent.succeeded event
-3. Get athlete_id from metadata
-4. Record donation in database
-5. Update athlete total_raised
-6. Update team total_raised
-7. Return 200 to acknowledge
-```
-
-#### 4. Database Operations (`/lib/db.ts`)
-
-Essential functions:
+**Athletes Endpoint (`/app/api/athletes/route.ts`):**
 
 ```typescript
-// Read operations
-getAthletes(): Athlete[] // All athletes with totals
-getAthlete(slug: string): Athlete // Single athlete by slug
-getTeamsWithTotals(): Team[] // For race visualization
-getBikeathonTotal(): number // Sum of all donations
+import prisma from '@/lib/prisma'
 
-// Write operations
-recordDonation(athleteId, amount, stripeId): void
-updateAthleteTotal(athleteId): void // Recalculate from donations
-updateTeamTotal(teamId): void // Sum of team members
+export async function GET() {
+  const athletes = await prisma.athlete.findMany({
+    include: {
+      team: true,
+      _count: {
+        select: { donations: true }
+      }
+    },
+    orderBy: { totalRaised: 'desc' }
+  })
+
+  return Response.json(athletes)
+}
 ```
 
-#### 5. Thank You Page (`/app/thank-you/page.tsx`)
+**Stripe Webhook (`/app/api/webhooks/stripe/route.ts`):**
 
-Post-donation confirmation showing:
+```typescript
+import prisma from '@/lib/prisma'
+import Stripe from 'stripe'
 
-- "Thank you for your donation!"
-- "You've sponsored X miles for [Athlete Name]"
-- Link back to homepage
-- Current team standings
+export async function POST(req: Request) {
+  // Verify webhook signature
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+  const sig = req.headers.get('stripe-signature')!
+
+  // Process payment_intent.succeeded
+  if (event.type === 'payment_intent.succeeded') {
+    const paymentIntent = event.data.object
+    const athleteId = parseInt(paymentIntent.metadata.athlete_id)
+    const amount = paymentIntent.amount / 100
+
+    // Use Prisma transaction for data consistency
+    await prisma.$transaction(async (tx) => {
+      // Record donation
+      await tx.donation.create({
+        data: {
+          amount,
+          stripePaymentIntentId: paymentIntent.id,
+          athleteId
+        }
+      })
+
+      // Update athlete total
+      await tx.athlete.update({
+        where: { id: athleteId },
+        data: {
+          totalRaised: { increment: amount }
+        }
+      })
+
+      // Update team total
+      const athlete = await tx.athlete.findUnique({
+        where: { id: athleteId },
+        select: { teamId: true }
+      })
+
+      await tx.team.update({
+        where: { id: athlete!.teamId },
+        data: {
+          totalRaised: { increment: amount }
+        }
+      })
+    })
+  }
+
+  return Response.json({ received: true })
+}
+```
+
+#### 5. Database Operations
+
+**Common Prisma Queries:**
+
+```typescript
+// Get all athletes with team info
+const athletes = await prisma.athlete.findMany({
+  include: { team: true }
+})
+
+// Get single athlete by slug
+const athlete = await prisma.athlete.findUnique({
+  where: { slug },
+  include: { team: true }
+})
+
+// Get teams with totals for race visualization
+const teams = await prisma.team.findMany({
+  orderBy: { totalRaised: 'desc' },
+  include: {
+    _count: { select: { athletes: true } }
+  }
+})
+
+// Get bikeathon total
+const result = await prisma.donation.aggregate({
+  _sum: { amount: true }
+})
+const total = result._sum.amount || 0
+
+// Recent donations (optional feature)
+const recentDonations = await prisma.donation.findMany({
+  take: 10,
+  orderBy: { createdAt: 'desc' },
+  include: {
+    athlete: {
+      include: { team: true }
+    }
+  }
+})
+```
 
 ### Development Milestones
 
 **Phase 1: Foundation (4-6 hours)**
 
 - Next.js project setup with TypeScript and Tailwind
-- SQLite database with schema
-- Seed script to populate initial data
-- Basic API routes for data fetching
+- PostgreSQL database setup (local or cloud)
+- Prisma schema definition and migration
+- Seed script for initial data
+- Basic API routes with Prisma queries
 
 **Phase 2: Donation Flow (6-8 hours)**
 
 - Stripe account setup and configuration
-- Individual athlete pages
+- Individual athlete pages with Prisma data fetching
 - Embedded payment form
-- Webhook handler for payment confirmation
-- Database updates on successful payment
+- Webhook handler with Prisma transactions
+- Payment confirmation flow
 
 **Phase 3: User Experience (4-6 hours)**
 
@@ -233,18 +396,20 @@ Post-donation confirmation showing:
 - Error handling and loading states
 - Progress bars and animations
 - Testing donation flow end-to-end
-- Deployment to Vercel
+- Deployment to Vercel with production database
 
 ### Environment Configuration
 
 ```env
+# Database - PostgreSQL connection string
+# For local: postgresql://user:password@localhost:5432/bikeathon
+# For production: Use connection string from provider (Supabase, Neon, etc.)
+DATABASE_URL="postgresql://user:password@localhost:5432/bikeathon"
+
 # Stripe Configuration
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_PUBLISHABLE_KEY=pk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
-
-# Database
-DATABASE_URL=file:./local.db
 
 # App Configuration
 NEXT_PUBLIC_BASE_URL=https://your-bikeathon.vercel.app
@@ -258,22 +423,71 @@ NEXT_PUBLIC_CURRENCY=USD
 npx create-next-app@latest bikeathon-fundraiser --typescript --tailwind --app
 
 # Install required dependencies
+npm install @prisma/client prisma
 npm install stripe @stripe/stripe-js @stripe/react-stripe-js
-npm install better-sqlite3 @types/better-sqlite3
 npm install lucide-react framer-motion
+npm install decimal.js # For handling currency calculations
 
-# Create database and seed initial data
-npm run db:setup
-npm run db:seed
+# Initialize Prisma with PostgreSQL
+npx prisma init --datasource-provider postgresql
+
+# After creating schema.prisma, generate Prisma Client
+npx prisma generate
+
+# Create and apply database migration
+npx prisma migrate dev --name init
+
+# Seed the database with initial data
+npx prisma db seed
 
 # Start development
 npm run dev
 ```
 
-### Sample Data Structure
+### Package.json Scripts
 
 ```json
-// initial-data.json for seeding
+{
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "prisma db seed",
+    "db:studio": "prisma studio",
+    "postinstall": "prisma generate"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  }
+}
+```
+
+### Database Deployment Options for Vercel
+
+**Recommended PostgreSQL Providers:**
+
+1. **Vercel Postgres** - Native integration, easiest setup
+2. **Supabase** - Free tier available, good for prototypes
+3. **Neon** - Serverless Postgres, scales to zero
+4. **Railway** - Simple deployment with good free tier
+
+**Connection Pooling:** For production, use Prisma with connection pooling:
+
+```prisma
+// prisma/schema.prisma for production
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") // For migrations
+}
+```
+
+### Sample Seed Data Structure
+
+```json
+// prisma/seed-data.json
 {
   "teams": [
     { "name": "Thunder Riders", "color": "#FFD700" },
@@ -286,7 +500,8 @@ npm run dev
       "slug": "john-smith",
       "team": "Thunder Riders",
       "bio": "Riding for a great cause! Every mile counts.",
-      "photoUrl": "/images/athletes/john-smith.jpg"
+      "photoUrl": "/images/athletes/john-smith.jpg",
+      "goal": 500
     }
     // ... more athletes
   ]
