@@ -29,11 +29,5 @@
         }
       ]
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/webhooks/stripe",
-      "destination": "/api/webhooks/stripe"
-    }
   ]
 }
