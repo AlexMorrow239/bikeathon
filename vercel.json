@@ -35,5 +35,8 @@
       "source": "/api/webhooks/stripe",
       "destination": "/api/webhooks/stripe"
     }
+  ],
+  "skipProtection": [
+    "/api/webhooks/stripe"
   ]
 }
