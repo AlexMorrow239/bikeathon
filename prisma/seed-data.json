@@ -11,13 +11,15 @@
       "slug": "patty",
       "team": "Thunder Riders",
       "goal": 300,
-      "milesGoal": 50
+      "milesGoal": 50,
+      "photoUrl": "/patty.jpg"
     },
     {
       "name": "Jacob B",
       "slug": "jacob-b",
       "team": "Thunder Riders",
-      "goal": 750
+      "goal": 750,
+      "photoUrl": "/jacob-b.jpg"
     },
     {
       "name": "Alex",
@@ -44,13 +46,15 @@
       "name": "Jimmy Koch",
       "slug": "jimmy-koch",
       "team": "Wind Breakers",
-      "goal": 1000
+      "goal": 1000,
+      "photoUrl": "/jimmy.jpg"
     },
     {
       "name": "Sally Work",
       "slug": "sally-work",
       "team": "Wind Breakers",
-      "goal": 1000
+      "goal": 1000,
+      "photoUrl": "/sally.jpg"
     },
     {
       "name": "Zach H",
@@ -79,30 +83,36 @@
       "slug": "jacob-lewis",
       "team": "Chain Gang",
       "goal": 300,
-      "milesGoal": 112
+      "milesGoal": 112,
+      "photoUrl": "/jacob-lewis.jpg"
     },
     {
       "name": "Kat Moceri",
       "slug": "kat-moceri",
       "team": "Chain Gang",
-      "goal": 1000
+      "goal": 1000,
+      "photoUrl": "/kat.jpg"
     },
     {
       "name": "Alaric",
       "slug": "alaric",
       "team": "Chain Gang",
-      "goal": 100
+      "goal": 100,
+      "photoUrl": "/alaric.jpg"
     },
     {
       "name": "Jeremy Toledano",
       "slug": "jeremy-toledano",
       "team": "Chain Gang",
-      "goal": 300
+      "goal": 300,
+      "photoUrl": "/jeremy.jpg"
     },
     {
       "name": "Lily",
       "slug": "lily",
-      "team": "Chain Gang"    },
+      "team": "Chain Gang",
+      "photoUrl": "/lilly.jpg"
+    },
     {
       "name": "Olivia",
       "slug": "olivia",
@@ -114,13 +124,15 @@
       "name": "Regan Giblin",
       "slug": "regan-giblin",
       "team": "Velocity Squad",
-      "goal": 300
+      "goal": 300,
+      "photoUrl": "/regan.jpg"
     },
     {
       "name": "Audrey Browning",
       "slug": "audrey-browning",
       "team": "Velocity Squad",
-      "goal": 500
+      "goal": 500,
+      "photoUrl": "/audrey.jpg"
     },
     {
       "name": "Rory",
