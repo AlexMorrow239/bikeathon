@@ -5,56 +5,22 @@ import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 // Route segment config for Vercel
+export const runtime = 'nodejs'; // Explicitly use Node.js runtime (required for Stripe webhook signature verification)
 export const maxDuration = 30; // Maximum function duration in seconds
 export const dynamic = 'force-dynamic'; // Disable caching for webhooks
+export const preferredRegion = 'auto'; // Let Vercel choose optimal region
 
-// Handle unsupported HTTP methods
-export async function GET(req: Request) {
-  console.log('[Stripe Webhook] GET request received - webhooks only support POST');
-  return NextResponse.json(
-    {
-      error: 'Method not allowed',
-      message: 'Stripe webhooks only support POST requests',
-      supportedMethods: ['POST']
+// Handle OPTIONS for CORS preflight (some environments require this)
+export async function OPTIONS() {
+  console.log('[Stripe Webhook] OPTIONS request received');
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Allow': 'POST, OPTIONS',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'stripe-signature, content-type',
     },
-    { status: 405, headers: { 'Allow': 'POST' } }
-  );
-}
-
-export async function PUT(req: Request) {
-  console.log('[Stripe Webhook] PUT request received - webhooks only support POST');
-  return NextResponse.json(
-    {
-      error: 'Method not allowed',
-      message: 'Stripe webhooks only support POST requests',
-      supportedMethods: ['POST']
-    },
-    { status: 405, headers: { 'Allow': 'POST' } }
-  );
-}
-
-export async function DELETE(req: Request) {
-  console.log('[Stripe Webhook] DELETE request received - webhooks only support POST');
-  return NextResponse.json(
-    {
-      error: 'Method not allowed',
-      message: 'Stripe webhooks only support POST requests',
-      supportedMethods: ['POST']
-    },
-    { status: 405, headers: { 'Allow': 'POST' } }
-  );
-}
-
-export async function PATCH(req: Request) {
-  console.log('[Stripe Webhook] PATCH request received - webhooks only support POST');
-  return NextResponse.json(
-    {
-      error: 'Method not allowed',
-      message: 'Stripe webhooks only support POST requests',
-      supportedMethods: ['POST']
-    },
-    { status: 405, headers: { 'Allow': 'POST' } }
-  );
+  });
 }
 
 // Stripe requires raw body for webhook signature verification

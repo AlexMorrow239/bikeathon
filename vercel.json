@@ -1,5 +1,16 @@
 {
   "buildCommand": "bunx prisma migrate deploy && next build",
   "installCommand": "bun install",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "headers": [
+    {
+      "source": "/api/webhooks/stripe",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "POST, OPTIONS"
+        }
+      ]
+    }
+  ]
 }
