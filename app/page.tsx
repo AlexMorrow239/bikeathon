@@ -118,9 +118,7 @@ export default function Home() {
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               Bikeathon Fundraiser
             </h1>
-            <p className="text-2xl mb-8">
-              $1 = 1 Mile • Every Dollar Counts!
-            </p>
+
             {/* Stats skeleton */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
               {[1, 2, 3].map(i => (
@@ -205,9 +203,6 @@ export default function Home() {
             <div className="grid md:grid-cols-2 gap-4 items-center">
               {/* Left: Key Concept */}
               <div className="text-center md:text-left">
-                <h2 className="text-2xl md:text-3xl font-bold mb-2 flex items-center justify-center md:justify-start gap-2">
-                  <span className="text-orange-100">$1 = 1 Mile</span>
-                </h2>
                 <p className="text-sm md:text-base text-white/90">
                   Support the largest roster in program history as we ride to Nationals!
                 </p>

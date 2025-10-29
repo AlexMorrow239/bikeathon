@@ -182,15 +182,6 @@ function DonationFormContent({ athleteId, athleteName }: DonationFormProps) {
         </div>
       </div>
 
-      {/* Miles Display */}
-      {amount > 0 && (
-        <div className="p-3 bg-success-50 border border-success-300 rounded">
-          <p className="text-success-700 font-medium">
-            Your {formatCurrency(amount)} donation = {dollarsToMiles(amount)} miles!
-          </p>
-        </div>
-      )}
-
       {/* Card Element */}
       <div>
         <label className="block text-sm font-medium mb-2">
