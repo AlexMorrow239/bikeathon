@@ -1,10 +1,10 @@
 import { DonationForm } from '@/components/DonationForm';
 import ProgressBar from '@/components/ProgressBar';
 import prisma from '@/lib/prisma';
-import { dollarsToMiles, formatCurrency } from '@/lib/utils';
-import { GLOBAL_ATHLETE_GOAL } from '@/lib/config';
+import { formatCurrency } from '@/lib/utils';
 import Decimal from 'decimal.js';
 import { notFound } from 'next/navigation';
+import { Bike } from 'lucide-react';
 
 interface DonationPageProps {
   params: Promise<{
@@ -31,7 +31,7 @@ export default async function DonatePage({ params }: DonationPageProps) {
 
   // Convert Decimal to number for display
   const totalRaised = new Decimal(athlete.totalRaised).toNumber();
-  const goal = GLOBAL_ATHLETE_GOAL;
+  const goal = new Decimal(athlete.goal).toNumber();
   const progressPercentage = Math.min((totalRaised / goal) * 100, 100);
 
   return (
@@ -61,9 +61,12 @@ export default async function DonatePage({ params }: DonationPageProps) {
             <span>Goal: {formatCurrency(goal)}</span>
           </div>
           <ProgressBar percentage={progressPercentage} />
-          <p className="text-sm text-gray-600 mt-2">
-            {dollarsToMiles(totalRaised)} miles committed so far!
-          </p>
+          {athlete.milesGoal && (
+            <p className="text-sm text-gray-600 mt-2 flex items-center gap-1">
+              <Bike className="w-4 h-4" />
+              {athlete.name} is riding {athlete.milesGoal} miles!
+            </p>
+          )}
         </div>
 
         {/* Donation Form */}

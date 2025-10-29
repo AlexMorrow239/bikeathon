@@ -1,6 +1,5 @@
 import { calculateProgress, formatCurrency, parseDecimal } from '@/lib/utils';
-import { GLOBAL_ATHLETE_GOAL } from '@/lib/config';
-import { ChevronRight, Target } from 'lucide-react';
+import { Bike, ChevronRight, Target } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ProgressBar from './ProgressBar';
@@ -13,6 +12,8 @@ interface AthleteCardProps {
     bio?: string | null;
     photoUrl?: string | null;
     totalRaised: string | number;
+    goal: string | number;
+    milesGoal: number;
     team?: {
       id: number;
       name: string;
@@ -23,7 +24,7 @@ interface AthleteCardProps {
 
 export default function AthleteCard({ athlete }: AthleteCardProps) {
   const raised = parseDecimal(athlete.totalRaised);
-  const goal = GLOBAL_ATHLETE_GOAL;
+  const goal = athlete.goal ? parseDecimal(athlete.goal) : 200;
   const progress = calculateProgress(raised, goal);
 
   // Get initials for avatar placeholder
@@ -85,6 +86,16 @@ export default function AthleteCard({ athlete }: AthleteCardProps) {
         </p>
       )}
 
+      {/* Miles Goal Badge */}
+      {athlete.milesGoal && (
+        <div className="mb-3 bg-primary-50 border border-primary-200 rounded-lg px-3 py-2 flex items-center gap-2">
+          <Bike className="w-4 h-4 text-primary-600" />
+          <span className="text-sm font-medium text-primary-700">
+            Riding {athlete.milesGoal} miles
+          </span>
+        </div>
+      )}
+
       {/* Progress section */}
       <div className="mb-4">
         <div className="flex justify-between items-center mb-2">
@@ -98,7 +109,7 @@ export default function AthleteCard({ athlete }: AthleteCardProps) {
         </div>
         <ProgressBar percentage={progress} label={`${athlete.name}'s fundraising progress`} />
         <p className="text-xs text-gray-500 mt-1">
-          {progress}% of goal • {Math.floor(raised)} miles committed
+          {progress}% of fundraising goal
         </p>
       </div>
 

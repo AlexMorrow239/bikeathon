@@ -30,7 +30,8 @@ model Athlete {
   bio         String?    // Optional personal message
   photoUrl    String?    // Optional athlete photo
   totalRaised Decimal    @default(0) @db.Decimal(10, 2)
-  goal        Decimal    @default(500) @db.Decimal(10, 2)
+  goal        Decimal    @default(200) @db.Decimal(10, 2) // Individual fundraising goal
+  milesGoal   Int        @default(100) // Individual miles goal
   teamId      Int
   team        Team       @relation(fields: [teamId], references: [id])
   donations   Donation[]

@@ -5,8 +5,9 @@ type AthleteData = {
   name: string
   slug: string
   team: string
-  bio: string
-  goal: number
+  bio?: string
+  goal?: number
+  milesGoal?: number
   photoUrl?: string
 }
 
@@ -53,10 +54,11 @@ async function main() {
       data: {
         name: athlete.name,
         slug: athlete.slug,
-        bio: athlete.bio,
-        photoUrl: athlete.photoUrl,
         teamId: team.id,
-        goal: athlete.goal
+        ...(athlete.bio !== undefined && { bio: athlete.bio }),
+        ...(athlete.photoUrl !== undefined && { photoUrl: athlete.photoUrl }),
+        ...(athlete.goal !== undefined && { goal: athlete.goal }),
+        ...(athlete.milesGoal !== undefined && { milesGoal: athlete.milesGoal })
       }
     })
   }

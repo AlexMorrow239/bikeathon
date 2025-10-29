@@ -18,7 +18,7 @@ interface DonationFormProps {
   athleteName: string;
 }
 
-const PRESET_AMOUNTS = [25, 50, 100, 250];
+const PRESET_AMOUNTS = [2, 5, 10, 20];
 
 function DonationFormContent({ athleteId, athleteName }: DonationFormProps) {
   const stripe = useStripe();

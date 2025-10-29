@@ -10,169 +10,146 @@
       "name": "Patty",
       "slug": "patty",
       "team": "Thunder Riders",
-      "bio": "Riding for a great cause! Every mile counts.",
-      "goal": 500
+      "goal": 300,
+      "milesGoal": 50
     },
     {
       "name": "Jacob B",
       "slug": "jacob-b",
       "team": "Thunder Riders",
-      "bio": "Excited to pedal for purpose and make a difference!",
       "goal": 750
     },
     {
       "name": "Alex",
       "slug": "alex",
       "team": "Thunder Riders",
-      "bio": "100 miles? Challenge accepted! Let's do this!",
-      "goal": 1000
+      "goal": 200
     },
     {
       "name": "Blake",
       "slug": "blake",
-      "team": "Thunder Riders",
-      "bio": "Breaking barriers one mile at a time.",
-      "goal": 600
+      "team": "Thunder Riders"
     },
     {
       "name": "Ouisie",
       "slug": "ouisie",
       "team": "Thunder Riders",
-      "bio": "Wind in my hair, purpose in my heart!",
-      "goal": 500
+      "goal": 300
     },
     {
       "name": "Juan",
       "slug": "juan",
-      "team": "Thunder Riders",
-      "bio": "Chasing the wind and raising funds!",
-      "goal": 800
-    },
+      "team": "Thunder Riders"    },
     {
       "name": "Jimmy Koch",
       "slug": "jimmy-koch",
       "team": "Wind Breakers",
-      "bio": "Linked together for a common cause!",
-      "goal": 700
+      "goal": 1000
     },
     {
       "name": "Sally Work",
       "slug": "sally-work",
       "team": "Wind Breakers",
-      "bio": "Every chain link represents a mile of hope.",
-      "goal": 550
+      "goal": 1000
     },
     {
       "name": "Zach H",
       "slug": "zach-h",
       "team": "Wind Breakers",
-      "bio": "Stronger together, riding for change!",
-      "goal": 900
+      "goal": 100,
+      "milesGoal": 45
     },
     {
       "name": "Tessa Brown",
       "slug": "tessa-brown",
-      "team": "Wind Breakers",
-      "bio": "Speed meets purpose on this journey!",
-      "goal": 650
-    },
+      "team": "Wind Breakers"    },
     {
       "name": "Lexi Loonan",
       "slug": "lexi-loonan",
-      "team": "Wind Breakers",
-      "bio": "Fast wheels, big hearts, great cause!",
-      "goal": 750
-    },
+      "team": "Wind Breakers"    },
     {
       "name": "Rosalie Smullen",
       "slug": "rosalie-smullen",
       "team": "Wind Breakers",
-      "bio": "Accelerating toward our fundraising goals!",
-      "goal": 1200
+      "goal": 150,
+      "milesGoal": 60
     },
     {
       "name": "Jacob Lewis",
       "slug": "jacob-lewis",
       "team": "Chain Gang",
-      "bio": "Riding for a great cause! Every mile counts.",
-      "goal": 500
+      "goal": 300,
+      "milesGoal": 112
     },
     {
       "name": "Kat Moceri",
       "slug": "kat-moceri",
       "team": "Chain Gang",
-      "bio": "Excited to pedal for purpose and make a difference!",
-      "goal": 750
+      "goal": 1000
     },
     {
       "name": "Alaric",
       "slug": "alaric",
       "team": "Chain Gang",
-      "bio": "100 miles? Challenge accepted! Let's do this!",
-      "goal": 1000
+      "goal": 100
     },
     {
       "name": "Jeremy Toledano",
       "slug": "jeremy-toledano",
       "team": "Chain Gang",
-      "bio": "Breaking barriers one mile at a time.",
-      "goal": 600
+      "goal": 300
     },
     {
       "name": "Lily",
       "slug": "lily",
-      "team": "Chain Gang",
-      "bio": "Wind in my hair, purpose in my heart!",
-      "goal": 500
-    },
+      "team": "Chain Gang"    },
     {
       "name": "Olivia",
       "slug": "olivia",
       "team": "Chain Gang",
-      "bio": "Chasing the wind and raising funds!",
-      "goal": 800
+      "goal": 500,
+      "milesGoal": 45
     },
     {
       "name": "Regan Giblin",
       "slug": "regan-giblin",
       "team": "Velocity Squad",
-      "bio": "Linked together for a common cause!",
-      "goal": 700
+      "goal": 300
     },
     {
       "name": "Audrey Browning",
       "slug": "audrey-browning",
       "team": "Velocity Squad",
-      "bio": "Every chain link represents a mile of hope.",
-      "goal": 550
+      "goal": 500
     },
     {
       "name": "Rory",
       "slug": "rory",
       "team": "Velocity Squad",
-      "bio": "Stronger together, riding for change!",
-      "goal": 900
+      "goal": 300
     },
     {
       "name": "Adam Berg",
       "slug": "adam-berg",
       "team": "Velocity Squad",
-      "bio": "Speed meets purpose on this journey!",
-      "goal": 650
+      "goal": 200
     },
     {
       "name": "Alexa",
       "slug": "alexa",
-      "team": "Velocity Squad",
-      "bio": "Fast wheels, big hearts, great cause!",
-      "goal": 750
-    },
+      "team": "Velocity Squad"    },
     {
       "name": "Filipo Bora",
       "slug": "filipo-bora",
       "team": "Velocity Squad",
-      "bio": "Accelerating toward our fundraising goals!",
       "goal": 1200
+    },
+    {
+      "name": "Opal",
+      "slug": "opal",
+      "team": "Thunder Riders",
+      "goal": 100,
+      "milesGoal": 45
     }
   ]
 }

@@ -3,11 +3,11 @@
  */
 
 /**
- * Global fundraising goal for all athletes
- * This value is used for all athletes instead of individual goals
- * Default: $500
+ * Global fundraising goal used for team race tracker calculations
+ * Individual athletes have their own goals stored in the database
+ * Default: $200
  */
-export const GLOBAL_ATHLETE_GOAL = 500;
+export const GLOBAL_ATHLETE_GOAL = 200;
 
 /**
  * Get the global athlete goal
