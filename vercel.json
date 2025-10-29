@@ -1,5 +1,5 @@
 {
-  "buildCommand": "bunx prisma migrate reset && next build",
+  "buildCommand": "bunx prisma migrate reset --force && next build",
   "installCommand": "bun install",
   "framework": "nextjs",
   "headers": [
