@@ -33,6 +33,8 @@ interface Athlete {
   bio?: string | null;
   photoUrl?: string | null;
   totalRaised: string;
+  goal: number;
+  milesGoal: number;
   team: {
     id: number;
     name: string;
