@@ -1,4 +1,5 @@
 import { calculateProgress, formatCurrency, parseDecimal } from '@/lib/utils';
+import { GLOBAL_ATHLETE_GOAL } from '@/lib/config';
 import { ChevronRight, Target } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -12,7 +13,6 @@ interface AthleteCardProps {
     bio?: string | null;
     photoUrl?: string | null;
     totalRaised: string | number;
-    goal: string | number;
     team?: {
       id: number;
       name: string;
@@ -23,7 +23,7 @@ interface AthleteCardProps {
 
 export default function AthleteCard({ athlete }: AthleteCardProps) {
   const raised = parseDecimal(athlete.totalRaised);
-  const goal = parseDecimal(athlete.goal);
+  const goal = GLOBAL_ATHLETE_GOAL;
   const progress = calculateProgress(raised, goal);
 
   // Get initials for avatar placeholder

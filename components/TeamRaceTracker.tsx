@@ -1,4 +1,5 @@
 import { formatCurrency, parseDecimal } from '@/lib/utils';
+import { GLOBAL_ATHLETE_GOAL } from '@/lib/config';
 import { Trophy, Users } from 'lucide-react';
 
 interface Team {
@@ -16,11 +17,12 @@ interface TeamRaceTrackerProps {
 }
 
 export default function TeamRaceTracker({ teams }: TeamRaceTrackerProps) {
-  // Find the maximum total for calculating percentages
-  const maxTotal = Math.max(
-    ...teams.map(team => parseDecimal(team.totalRaised)),
-    1 // Avoid division by zero
-  );
+  // Calculate team goals based on number of athletes
+  const teamsWithGoals = teams.map(team => ({
+    ...team,
+    teamGoal: GLOBAL_ATHLETE_GOAL * (team._count?.athletes || 0)
+  }));
+
 
   return (
     <div className="w-full">
@@ -30,9 +32,9 @@ export default function TeamRaceTracker({ teams }: TeamRaceTrackerProps) {
       </div>
 
       <div className="space-y-4">
-        {teams.map((team, index) => {
+        {teamsWithGoals.map((team, index) => {
           const raised = parseDecimal(team.totalRaised);
-          const percentage = (raised / maxTotal) * 100;
+          const goalPercentage = team.teamGoal > 0 ? (raised / team.teamGoal) * 100 : 0;
 
           return (
             <div key={team.id} className="relative">
@@ -55,16 +57,23 @@ export default function TeamRaceTracker({ teams }: TeamRaceTrackerProps) {
                     </span>
                   )}
                 </div>
-                <span className="font-semibold">
-                  {formatCurrency(raised)}
-                </span>
+                <div className="text-right">
+                  <span className="font-semibold block">
+                    {formatCurrency(raised)}
+                  </span>
+                  {team.teamGoal > 0 && (
+                    <span className="text-xs text-gray-500">
+                      of {formatCurrency(team.teamGoal)} goal
+                    </span>
+                  )}
+                </div>
               </div>
 
               {/* Progress bar */}
               <div
                 className="w-full bg-gray-200 rounded-full h-6 overflow-hidden"
                 role="progressbar"
-                aria-valuenow={Math.round(percentage)}
+                aria-valuenow={Math.round(goalPercentage)}
                 aria-valuemin={0}
                 aria-valuemax={100}
                 aria-label={`${team.name} fundraising progress`}
@@ -72,29 +81,29 @@ export default function TeamRaceTracker({ teams }: TeamRaceTrackerProps) {
                 <div
                   className="h-full rounded-full flex items-center justify-end pr-2"
                   style={{
-                    width: `${Math.max(percentage, 5)}%`, // Minimum 5% for visibility
+                    width: `${Math.min(Math.max(goalPercentage, 5), 100)}%`, // Minimum 5% for visibility, max 100%
                     backgroundColor: team.color,
                   }}
                 >
-                  {percentage > 15 && (
+                  {goalPercentage > 15 && (
                     <span className="text-white text-xs font-medium">
-                      {Math.round(percentage)}%
+                      {Math.round(goalPercentage)}%
                     </span>
                   )}
                 </div>
               </div>
 
               {/* Percentage outside if bar is too small */}
-              {percentage <= 15 && raised > 0 && (
+              {goalPercentage <= 15 && raised > 0 && (
                 <span className="text-xs text-gray-500 mt-1 inline-block">
-                  {Math.round(percentage)}%
+                  {Math.round(goalPercentage)}% of goal
                 </span>
               )}
             </div>
           );
         })}
 
-        {teams.length === 0 && (
+        {teamsWithGoals.length === 0 && (
           <div className="text-center py-8 text-gray-500">
             <Users className="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p>No teams yet</p>

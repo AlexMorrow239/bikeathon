@@ -2,6 +2,7 @@ import { DonationForm } from '@/components/DonationForm';
 import ProgressBar from '@/components/ProgressBar';
 import prisma from '@/lib/prisma';
 import { dollarsToMiles, formatCurrency } from '@/lib/utils';
+import { GLOBAL_ATHLETE_GOAL } from '@/lib/config';
 import Decimal from 'decimal.js';
 import { notFound } from 'next/navigation';
 
@@ -30,7 +31,7 @@ export default async function DonatePage({ params }: DonationPageProps) {
 
   // Convert Decimal to number for display
   const totalRaised = new Decimal(athlete.totalRaised).toNumber();
-  const goal = new Decimal(athlete.goal).toNumber();
+  const goal = GLOBAL_ATHLETE_GOAL;
   const progressPercentage = Math.min((totalRaised / goal) * 100, 100);
 
   return (
