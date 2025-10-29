@@ -1,14 +1,5 @@
 {
-  "buildCommand": "bunx prisma migrate reset -f && next build",
+  "buildCommand": "bunx prisma migrate deploy && next build",
   "installCommand": "bun install",
-  "framework": "nextjs",
-  "outputDirectory": ".next",
-  "functions": {
-    "app/api/webhooks/stripe/route.ts": {
-      "maxDuration": 10
-    },
-    "app/api/create-payment-intent/route.ts": {
-      "maxDuration": 10
-    }
-  }
+  "framework": "nextjs"
 }

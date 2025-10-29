@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { Activity, Heart, Users, AlertTriangle, RefreshCw } from 'lucide-react';
 import AthleteCard from '@/components/AthleteCard';
 import AthleteSearch from '@/components/AthleteSearch';
-import TeamRaceTracker from '@/components/TeamRaceTracker';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import TeamRaceTracker from '@/components/TeamRaceTracker';
 import { formatCurrency, formatMiles } from '@/lib/utils';
+import { Activity, AlertTriangle, Heart, RefreshCw, Users } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 
 interface Stats {
   totalRaised: number;
@@ -176,11 +176,9 @@ export default function Home() {
             <Activity className="w-16 h-16" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Bikeathon Fundraiser
+            Tricanes Annual Bikeathon Fundraiser
           </h1>
-          <p className="text-2xl mb-8">
-            $1 = 1 Mile • Every Dollar Counts!
-          </p>
+          <p className="text-2xl mb-8">This Sunday, the University of Miami Tricanes will be riding all day at Shark Valley Trail in the Everglades for our annual Bike-a-Thon fundraiser to help support our journey to Nationals in Gulfport, Mississippi this spring! This year we have the largest competitive roster in program history, and with Nationals being out-of-state, we would be so grateful for any support that helps us transport our bikes and athletes to Mississippi. Each athlete has their own fundraising profile. Donors can pledge a dollar amount per mile ridden by that athlete during the Bike-a-Thon — or make a flat donation of any amount.Four teams of six Tricanes will compete to see who can raise the most funds and cover the most distance! Your donations go directly toward race registration fees, equipment costs, and bike maintenance, helping us keep triathlon accessible to all UM students, regardless of experience level. Our team goal is to raise $10,000, and every mile (and dollar) counts toward getting us to Nationals! GO Tri-‘CANES!!!</p>
 
           {/* Overall stats */}
           {stats && (

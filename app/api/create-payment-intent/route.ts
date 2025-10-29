@@ -1,6 +1,9 @@
-import { NextResponse } from 'next/server';
-import { stripe, formatAmountForStripe } from '@/lib/stripe-server';
 import prisma from '@/lib/prisma';
+import { formatAmountForStripe, stripe } from '@/lib/stripe-server';
+import { NextResponse } from 'next/server';
+
+// Route segment config for Vercel
+export const maxDuration = 60; // Maximum function duration in seconds
 
 export async function POST(req: Request) {
   try {

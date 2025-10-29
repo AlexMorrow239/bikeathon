@@ -4,6 +4,10 @@ import Decimal from 'decimal.js';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 
+// Route segment config for Vercel
+export const maxDuration = 30; // Maximum function duration in seconds
+export const dynamic = 'force-dynamic'; // Disable caching for webhooks
+
 // Handle unsupported HTTP methods
 export async function GET(req: Request) {
   console.log('[Stripe Webhook] GET request received - webhooks only support POST');
