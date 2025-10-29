@@ -5,7 +5,7 @@ import AthleteSearch from '@/components/AthleteSearch';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import TeamRaceTracker from '@/components/TeamRaceTracker';
 import { formatCurrency, formatMiles } from '@/lib/utils';
-import { Activity, AlertTriangle, Heart, RefreshCw, Users } from 'lucide-react';
+import { Activity, AlertTriangle, Calendar, DollarSign, Heart, MapPin, RefreshCw, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 interface Stats {
@@ -169,38 +169,94 @@ export default function Home() {
         </div>
       )}
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-b from-primary-500 to-primary-600 text-white py-16 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="flex justify-center mb-4">
-            <Activity className="w-16 h-16" />
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Tricanes Annual Bikeathon Fundraiser
-          </h1>
-          <p className="text-2xl mb-8">This Sunday, the University of Miami Tricanes will be riding all day at Shark Valley Trail in the Everglades for our annual Bike-a-Thon fundraiser to help support our journey to Nationals in Gulfport, Mississippi this spring! This year we have the largest competitive roster in program history, and with Nationals being out-of-state, we would be so grateful for any support that helps us transport our bikes and athletes to Mississippi. Each athlete has their own fundraising profile. Donors can pledge a dollar amount per mile ridden by that athlete during the Bike-a-Thon — or make a flat donation of any amount.Four teams of six Tricanes will compete to see who can raise the most funds and cover the most distance! Your donations go directly toward race registration fees, equipment costs, and bike maintenance, helping us keep triathlon accessible to all UM students, regardless of experience level. Our team goal is to raise $10,000, and every mile (and dollar) counts toward getting us to Nationals! GO Tri-‘CANES!!!</p>
-
-          {/* Overall stats */}
-          {stats && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
-              <div className="bg-white/10 backdrop-blur rounded-lg p-4">
-                <p className="text-3xl font-bold">{formatCurrency(stats.totalRaised)}</p>
-                <p className="text-sm opacity-90">Total Raised</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur rounded-lg p-4">
-                <p className="text-3xl font-bold">{formatMiles(stats.totalMiles)}</p>
-                <p className="text-sm opacity-90">Miles Committed</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur rounded-lg p-4">
-                <p className="text-3xl font-bold">{stats.totalDonations}</p>
-                <p className="text-sm opacity-90">Donations</p>
-              </div>
+      {/* Hero Section - Condensed */}
+      <section className="bg-gradient-to-b from-primary-500 to-primary-600 text-white py-12 px-4">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-6">
+            <div className="flex justify-center mb-3">
+              <Activity className="w-12 h-12 md:w-14 md:h-14" />
             </div>
-          )}
+            <h1 className="text-3xl md:text-5xl font-bold mb-2">
+              Tricanes Bikeathon 2025
+            </h1>
+            <p className="text-lg md:text-xl text-orange-100 font-medium">
+              Fundraiser for Nationals • Gulfport, Mississippi
+            </p>
+          </div>
 
-          <p className="mt-8 text-lg">
-            Support your favorite athlete and help them reach their fundraising goal!
-          </p>
+          {/* Event Details */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 mb-6 text-sm md:text-base">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4" />
+              <span>This Sunday</span>
+            </div>
+            <div className="hidden sm:block text-white/60">|</div>
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4" />
+              <span>Shark Valley Trail, Everglades</span>
+            </div>
+          </div>
+
+          {/* Key Message & Stats in One Row */}
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 md:p-6 mb-6">
+            <div className="grid md:grid-cols-2 gap-4 items-center">
+              {/* Left: Key Concept */}
+              <div className="text-center md:text-left">
+                <h2 className="text-2xl md:text-3xl font-bold mb-2 flex items-center justify-center md:justify-start gap-2">
+                  <span className="text-orange-100">$1 = 1 Mile</span>
+                </h2>
+                <p className="text-sm md:text-base text-white/90">
+                  Support the largest roster in program history as we ride to Nationals!
+                </p>
+              </div>
+
+              {/* Right: Live Stats */}
+              {stats && (
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div>
+                    <p className="text-xl md:text-2xl font-bold">{formatCurrency(stats.totalRaised)}</p>
+                    <p className="text-xs opacity-80">Raised</p>
+                  </div>
+                  <div>
+                    <p className="text-xl md:text-2xl font-bold">{formatMiles(stats.totalMiles)}</p>
+                    <p className="text-xs opacity-80">Miles</p>
+                  </div>
+                  <div>
+                    <p className="text-xl md:text-2xl font-bold">{stats.totalDonations}</p>
+                    <p className="text-xs opacity-80">Donors</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Personal Mission Statement */}
+          <div className="bg-white/5 backdrop-blur-sm rounded-xl p-5 mb-6 max-w-4xl mx-auto">
+            <p className="text-sm md:text-base leading-relaxed text-white/90">
+              This year, we have the <span className="text-orange-100 font-semibold">largest competitive roster in program history</span> —
+              24 athletes divided into four teams of six, all competing to see who can raise the most funds and cover the most distance!
+              Your donations go directly toward <span className="text-orange-100">race registration fees, equipment costs, and bike maintenance</span>,
+              helping us keep triathlon accessible to all UM students regardless of experience level.
+              With Nationals being out-of-state this spring, every dollar truly makes a difference in getting our bikes and athletes to Mississippi.
+              Our team goal is <span className="text-orange-100 font-semibold">$10,000</span>, and we&apos;re counting on your support to get there!
+            </p>
+          </div>
+
+          {/* Mobile-Friendly CTA */}
+          <div className="text-center">
+            <p className="text-base md:text-lg font-semibold text-orange-100 mb-2">
+              GO TRI-CANES!
+            </p>
+            <button
+              onClick={() => document.getElementById('athletes-section')?.scrollIntoView({ behavior: 'smooth' })}
+              className="inline-flex items-center gap-2 bg-white text-primary-600 px-6 py-2.5 rounded-full font-semibold hover:bg-orange-50 transition-colors"
+            >
+              <DollarSign className="w-4 h-4" />
+              Donate Now
+            </button>
+          </div>
+
         </div>
       </section>
 
@@ -214,7 +270,7 @@ export default function Home() {
       </section>
 
       {/* Athletes Section */}
-      <section className="py-12 px-4">
+      <section id="athletes-section" className="py-12 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold mb-4">Support Our Athletes</h2>
