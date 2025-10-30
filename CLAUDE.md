@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Bikeathon fundraising platform built with Next.js 16, TypeScript, Prisma ORM, and Stripe. It allows donors to support athletes participating in a bikeathon event where $1 donated = 1 mile the athlete commits to riding.
+This is a Bikeathon fundraising platform built with Next.js 16, TypeScript, Prisma ORM, and Stripe. It allows donors to support athletes participating in a bikeathon event.
 
 ## Key Commands
 
