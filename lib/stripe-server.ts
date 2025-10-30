@@ -2,7 +2,7 @@ import Stripe from 'stripe';
 
 // Server-side Stripe client - only import this in server components/API routes
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-09-30.clover',
+  apiVersion: '2025-10-29.clover',
   typescript: true,
 });
 
