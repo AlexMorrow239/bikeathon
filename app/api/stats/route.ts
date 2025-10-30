@@ -5,7 +5,7 @@ import Decimal from 'decimal.js';
 export async function GET() {
   try {
     // Get overall totals using Prisma aggregation
-    const [donationStats, athleteCount, teamCount] = await Promise.all([
+    const [donationStats, athleteCount, teamCount, athleteMilesSum] = await Promise.all([
       // Total donations and amount
       prisma.donation.aggregate({
         _sum: {
@@ -18,7 +18,13 @@ export async function GET() {
       // Total athletes
       prisma.athlete.count(),
       // Total teams
-      prisma.team.count()
+      prisma.team.count(),
+      // Sum of all athlete mile goals
+      prisma.athlete.aggregate({
+        _sum: {
+          milesGoal: true
+        }
+      })
     ]);
 
     // Calculate total raised (sum of all donations)
@@ -26,8 +32,8 @@ export async function GET() {
       ? new Decimal(donationStats._sum.amount).toNumber()
       : 0;
 
-    // Since $1 = 1 mile, totalRaised equals totalMiles
-    const totalMiles = totalRaised;
+    // Sum of all athlete mile goals
+    const totalMiles = athleteMilesSum._sum.milesGoal || 0;
 
     return NextResponse.json({
       totalRaised,

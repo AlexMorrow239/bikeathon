@@ -1,10 +1,9 @@
 'use client';
 
+import { formatCurrency, parseDecimal } from '@/lib/utils';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { formatCurrency } from '@/lib/utils';
-import { useEffect, useState } from 'react';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 function ThankYouContent() {
   const searchParams = useSearchParams();
@@ -40,16 +39,13 @@ function ThankYouContent() {
 
         <div className="mb-8 p-6 bg-success-50 border border-success-200 rounded-lg">
           <p className="text-2xl font-semibold mb-2 text-gray-900">
-            You donated {formatCurrency(parseFloat(amount))}
-          </p>
-          <p className="text-xl text-success-700 font-medium">
-            = {miles} miles for {decodeURIComponent(athlete)}!
+            You donated {formatCurrency(parseDecimal(amount))}
           </p>
         </div>
 
         <p className="text-gray-600 mb-8">
           Your generous donation will help {decodeURIComponent(athlete)} reach their fundraising goal.
-          Every mile counts!
+          Every dollar counts!
         </p>
 
         <Link
