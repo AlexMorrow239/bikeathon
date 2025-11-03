@@ -10,12 +10,14 @@ function ThankYouContent() {
   const [amount, setAmount] = useState<string | null>(null);
   const [athlete, setAthlete] = useState<string | null>(null);
   const [miles, setMiles] = useState<string | null>(null);
+  const [donor, setDonor] = useState<string | null>(null);
 
   useEffect(() => {
     // Get parameters from URL
     setAmount(searchParams.get('amount'));
     setAthlete(searchParams.get('athlete'));
     setMiles(searchParams.get('miles'));
+    setDonor(searchParams.get('donor'));
   }, [searchParams]);
 
   if (!amount || !athlete || !miles) {
@@ -35,7 +37,9 @@ function ThankYouContent() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center max-w-md">
-        <h1 className="text-3xl font-bold mb-6 text-gray-900">Thank You!</h1>
+        <h1 className="text-3xl font-bold mb-6 text-gray-900">
+          {donor ? `Thank You, ${decodeURIComponent(donor)}!` : 'Thank You!'}
+        </h1>
 
         <div className="mb-8 p-6 bg-success-50 border border-success-200 rounded-lg">
           <p className="text-2xl font-semibold mb-2 text-gray-900">

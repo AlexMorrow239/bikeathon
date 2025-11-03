@@ -45,6 +45,7 @@ model Athlete {
 model Donation {
   id                    Int      @id @default(autoincrement())
   amount                Decimal  @db.Decimal(10, 2)
+  donorName             String?  // Optional donor name for display
   stripePaymentIntentId String   @unique
   athleteId             Int
   athlete               Athlete  @relation(fields: [athleteId], references: [id])

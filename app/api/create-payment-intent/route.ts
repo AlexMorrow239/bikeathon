@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const { amount, athleteId } = body;
+    const { amount, athleteId, donorName } = body;
 
     // Validate inputs
     if (!amount || !athleteId) {
@@ -80,6 +80,7 @@ export async function POST(req: Request) {
       metadata: {
         athlete_id: numAthleteId.toString(),
         athlete_name: athlete.name,
+        ...(donorName && { donor_name: donorName }), // Include donor name if provided
       },
       description: `Donation for ${athlete.name} - Bikeathon Fundraiser`,
     });

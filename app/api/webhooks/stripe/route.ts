@@ -141,10 +141,12 @@ export async function POST(req: Request) {
 
         const amount = formatAmountFromStripe(paymentIntent.amount);
         const athleteId = parseInt(paymentIntent.metadata.athlete_id);
+        const donorName = paymentIntent.metadata.donor_name || undefined;
 
         console.log('[Stripe Webhook] Processing donation:', {
           amount,
           athleteId,
+          donorName: donorName || 'Anonymous',
           paymentIntentId: paymentIntent.id
         });
 
@@ -169,6 +171,7 @@ export async function POST(req: Request) {
                 amount: new Decimal(amount),
                 stripePaymentIntentId: paymentIntent.id,
                 athleteId: athleteId,
+                donorName: donorName, // Will be undefined if not provided, which is fine for optional field
               },
             });
             console.log('[Stripe Webhook] Donation created:', donation.id);

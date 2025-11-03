@@ -28,6 +28,7 @@ function DonationFormContent({ athleteId, athleteName }: DonationFormProps) {
   const [amount, setAmount] = useState(50);
   const [customAmount, setCustomAmount] = useState('');
   const [isCustom, setIsCustom] = useState(false);
+  const [donorName, setDonorName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -79,6 +80,7 @@ function DonationFormContent({ athleteId, athleteName }: DonationFormProps) {
         body: JSON.stringify({
           amount,
           athleteId,
+          donorName: donorName.trim() || undefined, // Only include if not empty
         }),
       });
 
@@ -126,9 +128,15 @@ function DonationFormContent({ athleteId, athleteName }: DonationFormProps) {
         setError(errorMessage);
       } else if (result.paymentIntent.status === 'succeeded') {
         // Redirect to thank you page
-        router.push(
-          `/thank-you?amount=${amount}&athlete=${encodeURIComponent(athleteName)}&miles=${dollarsToMiles(amount)}`
-        );
+        const params = new URLSearchParams({
+          amount: amount.toString(),
+          athlete: athleteName,
+          miles: dollarsToMiles(amount).toString(),
+        });
+        if (donorName.trim()) {
+          params.append('donor', donorName.trim());
+        }
+        router.push(`/thank-you?${params.toString()}`);
       }
     } catch (err) {
       // Handle network errors and other issues
@@ -180,6 +188,25 @@ function DonationFormContent({ athleteId, athleteName }: DonationFormProps) {
             step="1"
           />
         </div>
+      </div>
+
+      {/* Donor Name (Optional) */}
+      <div>
+        <label htmlFor="donor-name" className="block text-sm font-medium mb-2">
+          Your Name (Optional)
+        </label>
+        <input
+          id="donor-name"
+          type="text"
+          placeholder="Enter your name (leave blank to donate anonymously)"
+          value={donorName}
+          onChange={(e) => setDonorName(e.target.value)}
+          className="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+          maxLength={100}
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          Your name will be displayed with your donation
+        </p>
       </div>
 
       {/* Card Element */}

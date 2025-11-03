@@ -231,12 +231,9 @@ export default function Home() {
           {/* Personal Mission Statement */}
           <div className="bg-white/5 backdrop-blur-sm rounded-xl p-5 mb-6 max-w-4xl mx-auto">
             <p className="text-sm md:text-base leading-relaxed text-white/90">
-              This year, we have the <span className="text-orange-100 font-semibold">largest competitive roster in program history</span> —
-              24 athletes divided into four teams of six, all competing to see who can raise the most funds and cover the most distance!
+              This year, we have the <span className="text-orange-100 font-semibold">largest competitive roster in program history</span>! {athletes.length} athletes divided into four teams, all competing to see who can raise the most funds and cover the most distance!
               Your donations go directly toward <span className="text-orange-100">race registration fees, equipment costs, and bike maintenance</span>,
-              helping us keep triathlon accessible to all UM students regardless of experience level.
-              With Nationals being out-of-state this spring, every dollar truly makes a difference in getting our bikes and athletes to Mississippi.
-              Our team goal is <span className="text-orange-100 font-semibold">$10,000</span>, and we&apos;re counting on your support to get there!
+              helping us keep triathlon accessible to all UM students regardless of experience level. With Nationals being out-of-state this spring, every dollar truly makes a difference in getting our bikes and athletes to Mississippi. Our team goal is <span className="text-orange-100 font-semibold">$10,000</span>, and we&apos;re counting on your support to get there!
             </p>
           </div>
 
