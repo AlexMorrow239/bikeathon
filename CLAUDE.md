@@ -130,6 +130,8 @@ await prisma.$transaction([
 - `STRIPE_WEBHOOK_SECRET` - Webhook endpoint secret
 - `NEXT_PUBLIC_BASE_URL` - Public app URL (used in metadata, redirects)
 - `NEXT_PUBLIC_CURRENCY` - Currency code (defaults to USD)
+- `ADMIN_PASSWORD` - Shared password for `/admin` UI login and Bearer-token API auth (shell scripts read this as `PROD_ADMIN_PASSWORD`)
+- `ADMIN_SESSION_SECRET` - 32+ random bytes that sign the `/admin` session cookie (`openssl rand -base64 32`)
 
 ### Miami Theme Colors
 
@@ -144,7 +146,8 @@ The application uses University of Miami branding:
 1. **Making Schema Changes**: Edit `prisma/schema.prisma`, then run `bun run db:migrate` to create migration
 2. **Testing Payments**: Use Stripe test card `4242 4242 4242 4242` with any future date
 3. **Viewing Database**: Run `bun run db:studio` for visual database editor
-4. **Adding Athletes/Teams**: Edit `prisma/seed-data.json` and run `bun run db:seed`
+4. **Adding Athletes/Teams**: Edit `prisma/seed-data.json` and run `bun run db:seed` (full reseed). For one-off additions, use the `/admin` UI or `./create-athlete.sh`.
+5. **Admin dashboard**: `/admin` provides UI parity with the shell scripts (athlete create + edit, team edit). Login uses `ADMIN_PASSWORD`; session cookie keyed by `ADMIN_SESSION_SECRET`. The shell scripts still work for headless / batch use.
 
 ## Gotchas
 
