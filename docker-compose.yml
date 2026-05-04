@@ -9,7 +9,10 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: bikeathon
     ports:
-      - "5432:5432"
+      # Host port 55432 → container 5432. Avoids clashing with other postgres
+      # instances on the host (e.g. another compose project on 5432). Inter-container
+      # traffic still uses postgres:5432 inside the compose network.
+      - "55432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -46,6 +49,25 @@ services:
       - app_next_cache:/app/.next
       - stripe_shared:/shared
     entrypoint: ["/bin/bash", "/app/docker/app-entrypoint.sh"]
+
+  prisma-studio:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PRISMA_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bikeathon?schema=public
+    ports:
+      # Host 5556 → container 5555. Non-standard host port avoids clashing with
+      # any local `bun run db:studio` the user may also run on 5555.
+      - "5556:5555"
+    volumes:
+      - .:/app
+      - app_node_modules:/app/node_modules
+    command: ["bunx", "prisma", "studio", "--port", "5555", "--hostname", "0.0.0.0", "--browser", "none"]
 
   stripe-cli:
     image: stripe/stripe-cli:latest

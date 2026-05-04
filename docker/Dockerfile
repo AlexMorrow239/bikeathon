@@ -5,11 +5,15 @@ WORKDIR /app
 # OS packages:
 #   openssl, ca-certificates - required by Prisma's query engine
 #   postgresql-client        - pg_isready + psql for the entrypoint to wait on / probe the DB
+#   python3, build-essential - bufferutil (transitive dep of @vercel/postgres) ships no
+#                              prebuild for linux/arm64 + Bun, so node-gyp compiles from source
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
        openssl \
        ca-certificates \
        postgresql-client \
+       python3 \
+       build-essential \
   && rm -rf /var/lib/apt/lists/*
 
 # Install deps with the lockfile to leverage Docker layer caching.
