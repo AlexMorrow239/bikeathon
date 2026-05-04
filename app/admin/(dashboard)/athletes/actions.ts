@@ -1,11 +1,15 @@
 'use server';
 
-import { Prisma } from '@prisma/client';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import prisma from '@/lib/prisma';
 import { requireAdmin } from '@/lib/admin/auth';
-import { fieldErrorsFromZod, formDataToObject } from '@/lib/admin/forms';
+import {
+  fieldErrorsFromZod,
+  formDataToObject,
+  isUniqueConstraintOn,
+  redirectWithError,
+} from '@/lib/admin/forms';
 import {
   athleteCreateSchema,
   athleteUpdateSchema,
@@ -57,12 +61,7 @@ export async function createAthleteAction(
       },
     });
   } catch (e) {
-    if (
-      e instanceof Prisma.PrismaClientKnownRequestError &&
-      e.code === 'P2002' &&
-      Array.isArray(e.meta?.target) &&
-      (e.meta.target as string[]).includes('slug')
-    ) {
+    if (isUniqueConstraintOn(e, 'slug')) {
       return {
         error: 'An athlete with this slug already exists',
         fieldErrors: { slug: 'Slug already in use' },
@@ -110,5 +109,26 @@ export async function updateAthleteAction(
   }
 
   revalidateAthletePaths(result.athlete.slug);
+  redirect('/admin/athletes');
+}
+
+export async function deleteAthleteAction(athleteId: number): Promise<void> {
+  await requireAdmin();
+
+  const athlete = await prisma.athlete.findUnique({
+    where: { id: athleteId },
+    include: { _count: { select: { donations: true } } },
+  });
+  if (!athlete) redirectWithError('/admin/athletes', 'Athlete not found');
+  if (athlete._count.donations > 0) {
+    redirectWithError(
+      '/admin/athletes',
+      `Cannot delete ${athlete.name}: ${athlete._count.donations} donation(s) exist`,
+    );
+  }
+
+  await prisma.athlete.delete({ where: { id: athleteId } });
+
+  revalidateAthletePaths(athlete.slug);
   redirect('/admin/athletes');
 }

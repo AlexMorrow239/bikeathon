@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import prisma from '@/lib/prisma';
 import { formatCurrency } from '@/lib/utils';
+import ErrorMessage from '@/components/ErrorMessage';
+import DeleteRowButton from '@/app/admin/_components/DeleteRowButton';
+import { deleteAthleteAction } from './actions';
 
 export const metadata = {
   title: 'Admin · Athletes',
@@ -9,9 +12,9 @@ export const metadata = {
 export default async function AdminAthletesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; error?: string }>;
 }) {
-  const { q } = await searchParams;
+  const { q, error } = await searchParams;
   const query = q?.trim() ?? '';
 
   const where = query
@@ -25,7 +28,10 @@ export default async function AdminAthletesPage({
 
   const athletes = await prisma.athlete.findMany({
     where,
-    include: { team: true },
+    include: {
+      team: true,
+      _count: { select: { donations: true } },
+    },
     orderBy: { name: 'asc' },
   });
 
@@ -40,6 +46,8 @@ export default async function AdminAthletesPage({
           Add athlete
         </Link>
       </div>
+
+      {error ? <ErrorMessage message={error} /> : null}
 
       <form
         method="get"
@@ -79,12 +87,13 @@ export default async function AdminAthletesPage({
               <th className="px-4 py-2 text-right">Raised</th>
               <th className="px-4 py-2 text-right">Goal</th>
               <th className="px-4 py-2"></th>
+              <th className="px-4 py-2"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {athletes.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-6 text-center text-gray-500">
+                <td colSpan={7} className="px-4 py-6 text-center text-gray-500">
                   {query ? 'No athletes match that search.' : 'No athletes yet.'}
                 </td>
               </tr>
@@ -122,6 +131,18 @@ export default async function AdminAthletesPage({
                     >
                       Edit
                     </Link>
+                  </td>
+                  <td className="px-4 py-2 text-right">
+                    <DeleteRowButton
+                      action={deleteAthleteAction.bind(null, a.id)}
+                      confirmMessage={`Delete ${a.name}? This cannot be undone.`}
+                      label={`Delete ${a.name}`}
+                      disabledReason={
+                        a._count.donations > 0
+                          ? `Cannot delete: ${a._count.donations} donation(s) exist`
+                          : undefined
+                      }
+                    />
                   </td>
                 </tr>
               ))

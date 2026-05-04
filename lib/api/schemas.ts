@@ -29,6 +29,10 @@ const teamIdField = z.coerce
   .int('Team ID must be a valid number')
   .positive('Team ID must be a valid number');
 
+const colorField = z
+  .string()
+  .regex(hexColorRegex, 'Color must be a valid hex color (e.g., #f47321)');
+
 export const athleteCreateSchema = z.object({
   name: z.string().trim().min(1, 'Athlete name is required and must be a non-empty string'),
   slug: slugField,
@@ -53,13 +57,16 @@ export const athleteUpdateSchema = z
   .refine((d) => Object.keys(d).length > 0, { message: 'No valid fields to update' });
 export type AthleteUpdateInput = z.infer<typeof athleteUpdateSchema>;
 
+export const teamCreateSchema = z.object({
+  name: z.string().trim().min(1, 'Team name is required and must be a non-empty string'),
+  color: colorField,
+});
+export type TeamCreateInput = z.infer<typeof teamCreateSchema>;
+
 export const teamUpdateSchema = z
   .object({
     name: z.string().trim().min(1, 'Team name must be a non-empty string').optional(),
-    color: z
-      .string()
-      .regex(hexColorRegex, 'Color must be a valid hex color (e.g., #f47321)')
-      .optional(),
+    color: colorField.optional(),
   })
   .refine((d) => Object.keys(d).length > 0, { message: 'No valid fields to update' });
 export type TeamUpdateInput = z.infer<typeof teamUpdateSchema>;

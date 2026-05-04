@@ -1,3 +1,5 @@
+import { Prisma } from '@prisma/client';
+import { redirect } from 'next/navigation';
 import type { ZodError } from 'zod';
 
 export function formDataToObject(formData: FormData): Record<string, unknown> {
@@ -20,4 +22,19 @@ export function fieldErrorsFromZod(
     if (path && !result[path]) result[path] = issue.message;
   }
   return result;
+}
+
+export function isUniqueConstraintOn(e: unknown, field: string): boolean {
+  if (
+    !(e instanceof Prisma.PrismaClientKnownRequestError) ||
+    e.code !== 'P2002'
+  ) {
+    return false;
+  }
+  const target = e.meta?.target;
+  return Array.isArray(target) && target.some((t) => t === field);
+}
+
+export function redirectWithError(path: string, message: string): never {
+  redirect(`${path}?error=${encodeURIComponent(message)}`);
 }

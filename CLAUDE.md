@@ -147,7 +147,7 @@ The application uses University of Miami branding:
 2. **Testing Payments**: Use Stripe test card `4242 4242 4242 4242` with any future date
 3. **Viewing Database**: Run `bun run db:studio` for visual database editor
 4. **Adding Athletes/Teams**: Edit `prisma/seed-data.json` and run `bun run db:seed` (full reseed). For one-off additions, use the `/admin` UI or `./create-athlete.sh`.
-5. **Admin dashboard**: `/admin` provides UI parity with the shell scripts (athlete create + edit, team edit). Login uses `ADMIN_PASSWORD`; session cookie keyed by `ADMIN_SESSION_SECRET`. The shell scripts still work for headless / batch use.
+5. **Admin dashboard**: `/admin` provides UI parity with the shell scripts (athlete create + edit + delete, team create + edit + delete). Deletes are blocked when dependents exist (athlete with donations, team with athletes) — donations are preserved as immutable financial records. Login uses `ADMIN_PASSWORD`; session cookie keyed by `ADMIN_SESSION_SECRET`. The shell scripts still work for headless / batch use.
 
 ## Gotchas
 
