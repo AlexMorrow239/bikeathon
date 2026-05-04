@@ -40,7 +40,7 @@ load_env() {
 }
 
 # Configuration
-API_BASE_URL="https://www.umtricanes.com/api"
+API_BASE_URL="${API_BASE_URL:-https://www.umtricanes.com/api}"
 
 # Function to validate JSON file
 validate_json_file() {

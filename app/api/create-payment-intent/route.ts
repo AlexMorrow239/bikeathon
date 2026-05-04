@@ -1,111 +1,47 @@
 import prisma from '@/lib/prisma';
+import { paymentIntentSchema } from '@/lib/api/schemas';
+import { error, ok, validationError } from '@/lib/api/responses';
 import { formatAmountForStripe, stripe } from '@/lib/stripe-server';
-import { NextResponse } from 'next/server';
 
-// Route segment config for Vercel
-export const maxDuration = 60; // Maximum function duration in seconds
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
   try {
-    // Parse request body
-    let body;
-    try {
-      body = await req.json();
-    } catch {
-      return NextResponse.json(
-        { error: 'Invalid request data. Please check your input and try again.' },
-        { status: 400 }
-      );
-    }
+    const body = await req.json().catch(() => null);
+    const parsed = paymentIntentSchema.safeParse(body);
+    if (!parsed.success) return validationError(parsed.error);
+    const { amount, athleteId, donorName } = parsed.data;
 
-    const { amount, athleteId, donorName } = body;
-
-    // Validate inputs
-    if (!amount || !athleteId) {
-      return NextResponse.json(
-        { error: 'Missing required information. Please select an amount and athlete.' },
-        { status: 400 }
-      );
-    }
-
-    // Validate amount is a number
-    const numAmount = Number(amount);
-    if (isNaN(numAmount)) {
-      return NextResponse.json(
-        { error: 'Invalid donation amount. Please enter a valid number.' },
-        { status: 400 }
-      );
-    }
-
-    if (numAmount < 1) {
-      return NextResponse.json(
-        { error: 'Donation amount must be at least $1.' },
-        { status: 400 }
-      );
-    }
-
-    if (numAmount > 999999) {
-      return NextResponse.json(
-        { error: 'Donation amount exceeds the maximum allowed ($999,999).' },
-        { status: 400 }
-      );
-    }
-
-    // Validate athleteId is a number
-    const numAthleteId = Number(athleteId);
-    if (isNaN(numAthleteId)) {
-      return NextResponse.json(
-        { error: 'Invalid athlete selection. Please refresh the page and try again.' },
-        { status: 400 }
-      );
-    }
-
-    // Verify athlete exists
     const athlete = await prisma.athlete.findUnique({
-      where: { id: numAthleteId },
+      where: { id: athleteId },
       select: { id: true, name: true },
     });
-
     if (!athlete) {
-      return NextResponse.json(
-        { error: 'Selected athlete not found. Please refresh the page and try again.' },
-        { status: 404 }
-      );
+      return error(404, 'Selected athlete not found. Please refresh the page and try again.');
     }
 
-    // Create Stripe payment intent
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: formatAmountForStripe(numAmount), // Convert dollars to cents
+      amount: formatAmountForStripe(amount),
       currency: 'usd',
+      automatic_payment_methods: { enabled: true },
       metadata: {
-        athlete_id: numAthleteId.toString(),
+        athlete_id: athleteId.toString(),
         athlete_name: athlete.name,
-        ...(donorName && { donor_name: donorName }), // Include donor name if provided
+        ...(donorName && { donor_name: donorName }),
       },
       description: `Donation for ${athlete.name} - Bikeathon Fundraiser`,
     });
 
-    return NextResponse.json({
+    return ok({
       client_secret: paymentIntent.client_secret,
       payment_intent_id: paymentIntent.id,
-      amount: numAmount,
+      amount,
     });
-  } catch (error) {
-    console.error('Error creating payment intent:', error);
-
-    // Check for Stripe-specific errors
-    if (error instanceof Error) {
-      if (error.message.includes('stripe')) {
-        return NextResponse.json(
-          { error: 'Payment service temporarily unavailable. Please try again in a moment.' },
-          { status: 503 }
-        );
-      }
+  } catch (err) {
+    console.error('Error creating payment intent:', err);
+    if (err instanceof Error && err.message.toLowerCase().includes('stripe')) {
+      return error(503, 'Payment service temporarily unavailable. Please try again in a moment.');
     }
-
-    return NextResponse.json(
-      { error: 'Unable to process your donation. Please try again or contact support.' },
-      { status: 500 }
-    );
+    return error(500, 'Unable to process your donation. Please try again or contact support.');
   }
 }

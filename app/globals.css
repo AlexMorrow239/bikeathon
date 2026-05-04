@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   /* University of Miami Brand Colors */
   --miami-orange: #f47321;

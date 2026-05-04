@@ -56,7 +56,7 @@ bun run lint          # Run ESLint
 
 - **Team**: Represents competing teams with color coding and fundraising totals
 - **Athlete**: Individual participants linked to teams with personal goals
-- **Donation**: Payment records linked to athletes with Stripe payment intent IDs
+- **Donation**: Payment records linked to athletes with Stripe payment intent IDs and optional `donorName` for public attribution
 
 Key relationships:
 
@@ -78,6 +78,20 @@ Key relationships:
 - **DonationForm**: Stripe Elements payment form
 - **TeamRaceTracker**: Visual team competition display
 - **AthleteSearch**: Debounced search functionality
+
+### Shared Modules (`lib/`)
+
+- `lib/prisma.ts` - Prisma client singleton (use this, never `new PrismaClient()`)
+- `lib/stripe-server.ts` - Server-side Stripe client (webhooks, payment intents)
+- `lib/stripe-client.ts` - Client-side Stripe.js loader
+- `lib/config.ts` - Runtime config (amount limits, currency)
+- `lib/utils.ts` - Shared utilities (currency formatting, slugs)
+
+### Operational Scripts
+
+- `create-athlete.sh` - Interactive script to add a new athlete (avoids manual seed-data edits)
+- `production-updates.sh` - Helpers for production data updates
+- `scripts/` - One-off data migration / utility scripts
 
 ### Key Libraries & Integrations
 
@@ -114,6 +128,8 @@ await prisma.$transaction([
 - `STRIPE_SECRET_KEY` - Stripe secret key
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` - Stripe publishable key
 - `STRIPE_WEBHOOK_SECRET` - Webhook endpoint secret
+- `NEXT_PUBLIC_BASE_URL` - Public app URL (used in metadata, redirects)
+- `NEXT_PUBLIC_CURRENCY` - Currency code (defaults to USD)
 
 ### Miami Theme Colors
 
@@ -130,20 +146,10 @@ The application uses University of Miami branding:
 3. **Viewing Database**: Run `bun run db:studio` for visual database editor
 4. **Adding Athletes/Teams**: Edit `prisma/seed-data.json` and run `bun run db:seed`
 
-## Common Tasks
+## Gotchas
 
-### Add New API Endpoint
-
-Create route handler in `app/api/[endpoint]/route.ts` following Next.js App Router conventions.
-
-### Modify Donation Processing
-
-Edit webhook handler at `app/api/webhooks/stripe/route.ts`. Ensure atomic transactions.
-
-### Update UI Components
-
-Components in `components/` directory. Use Tailwind classes and maintain Miami color theme.
-
-### Deploy to Production
-
-Push to main branch triggers Vercel deployment. Database migrations run automatically via `vercel:build` script.
+- **Decimal arithmetic**: `totalRaised`, `amount`, `goal` use Prisma `Decimal` (not JS number). Use `decimal.js` for math, convert with `.toString()` before JSON, or rounding errors will appear.
+- **Webhook idempotency**: Stripe may deliver the same `payment_intent.succeeded` event multiple times. The unique constraint on `Donation.stripePaymentIntentId` is the dedup gate — never remove it.
+- **Always use `lib/prisma.ts`**: Instantiating new `PrismaClient` per request exhausts connections in serverless. Import the singleton.
+- **Adding athletes**: Prefer `./create-athlete.sh` for production-style additions; `prisma/seed-data.json` + `db:seed` is for full reseeds (destructive).
+- **Schema → migration**: Always `db:migrate` (never `db:push` on shared/prod databases) so migrations get committed.
