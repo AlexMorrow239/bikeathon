@@ -20,20 +20,20 @@ print_status() {
     echo -e "${color}${message}${NC}"
 }
 
-# Load environment variables from .env.local
+# Load environment variables from .env
 load_env() {
-    if [ -f "$SCRIPT_DIR/.env.local" ]; then
-        # Extract PROD_ADMIN_PASSWORD from .env.local (for production use)
-        ADMIN_PASSWORD=$(grep "^PROD_ADMIN_PASSWORD=" "$SCRIPT_DIR/.env.local" | cut -d '=' -f2- | sed 's/^"//' | sed 's/"$//')
+    if [ -f "$SCRIPT_DIR/.env" ]; then
+        # Extract PROD_ADMIN_PASSWORD from .env (for production use)
+        ADMIN_PASSWORD=$(grep "^PROD_ADMIN_PASSWORD=" "$SCRIPT_DIR/.env" | cut -d '=' -f2- | sed 's/^"//' | sed 's/"$//')
 
         if [ -z "$ADMIN_PASSWORD" ]; then
-            print_status "$RED" "Error: PROD_ADMIN_PASSWORD not found in .env.local"
-            print_status "$YELLOW" "Please add PROD_ADMIN_PASSWORD=your-password to .env.local"
+            print_status "$RED" "Error: PROD_ADMIN_PASSWORD not found in .env"
+            print_status "$YELLOW" "Please add PROD_ADMIN_PASSWORD=your-password to .env"
             return 1
         fi
     else
-        print_status "$RED" "Error: .env.local file not found in $SCRIPT_DIR"
-        print_status "$YELLOW" "Please create .env.local with PROD_ADMIN_PASSWORD=your-password"
+        print_status "$RED" "Error: .env file not found in $SCRIPT_DIR"
+        print_status "$YELLOW" "Please create .env with PROD_ADMIN_PASSWORD=your-password"
         return 1
     fi
     return 0
@@ -345,7 +345,7 @@ main() {
             echo "Production Athlete Creation Script for www.umtricanes.com"
             echo "=========================================================="
             echo ""
-            print_status "$GREEN" "✓ Admin password loaded from .env.local"
+            print_status "$GREEN" "✓ Admin password loaded from .env"
             echo ""
             echo "Usage:"
             echo "  $0 <json-file>           Create athlete from JSON file"

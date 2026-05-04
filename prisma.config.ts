@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 import { defineConfig } from "prisma/config";
 
-// Load environment variables from .env.local file only in development
+// Load environment variables from .env file only in development
 if (process.env.NODE_ENV !== 'production') {
-  dotenv.config({ path: '.env.local' });
+  dotenv.config({ path: '.env' });
 }
 
 export default defineConfig({

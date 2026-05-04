@@ -1,0 +1,22 @@
+# Build artifacts (also covered by named volumes at runtime, but keep small build context)
+node_modules
+.next
+.turbo
+
+# VCS / editor noise
+.git
+.gitignore
+.DS_Store
+.vscode
+.idea
+*.swp
+
+# Logs
+*.log
+
+# Env files — never bake into images
+.env*
+!.env.example
+
+# Local tooling state
+.claude

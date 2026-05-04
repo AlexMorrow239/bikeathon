@@ -1,0 +1,74 @@
+# Development Stack
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bikeathon
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bikeathon"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      PRISMA_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bikeathon?schema=public
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bikeathon
+      # Polling-based file watching — needed for reliable hot reload on Docker Desktop (macOS/Windows).
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "true"
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - app_node_modules:/app/node_modules
+      - app_next_cache:/app/.next
+      - stripe_shared:/shared
+    entrypoint: ["/bin/bash", "/app/docker/app-entrypoint.sh"]
+
+  stripe-cli:
+    image: stripe/stripe-cli:latest
+    restart: unless-stopped
+    depends_on:
+      app:
+        condition: service_started
+    env_file:
+      - .env
+    environment:
+      # stripe-cli expects STRIPE_API_KEY; we reuse STRIPE_SECRET_KEY so .env has one Stripe key.
+      STRIPE_API_KEY: ${STRIPE_SECRET_KEY}
+      FORWARD_TO: http://app:3000/api/webhooks/stripe
+      STRIPE_DEVICE_NAME: bikeathon-docker-dev
+    volumes:
+      - ./docker/stripe-entrypoint.sh:/usr/local/bin/stripe-entrypoint.sh:ro
+      - stripe_shared:/shared
+    # Intentionally NO mount of ~/.config/stripe — keeps the container isolated from
+    # the host's `stripe login` state. Account is determined solely by STRIPE_API_KEY.
+    entrypoint: ["/bin/sh", "/usr/local/bin/stripe-entrypoint.sh"]
+
+volumes:
+  pgdata:
+  app_node_modules:
+  app_next_cache:
+  stripe_shared:
