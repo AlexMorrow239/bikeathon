@@ -1,3 +1,4 @@
+import { DONATIONS_ENABLED } from '@/lib/config';
 import { calculateProgress, formatCurrency, parseDecimal } from '@/lib/utils';
 import { Bike, ChevronRight, Target } from 'lucide-react';
 import Image from 'next/image';
@@ -113,14 +114,19 @@ export default function AthleteCard({ athlete }: AthleteCardProps) {
         </p>
       </div>
 
-      {/* Donate button */}
-      <Link
-        href={`/donate/${athlete.slug}`}
-        className="w-full bg-primary-500 text-white py-2 px-4 rounded-lg hover:bg-primary-600 active:bg-primary-700 transition-colors flex items-center justify-center gap-2 font-medium"
-      >
-        Donate
-        <ChevronRight className="w-4 h-4" />
-      </Link>
+      {DONATIONS_ENABLED ? (
+        <Link
+          href={`/donate/${athlete.slug}`}
+          className="w-full bg-primary-500 text-white py-2 px-4 rounded-lg hover:bg-primary-600 active:bg-primary-700 transition-colors flex items-center justify-center gap-2 font-medium"
+        >
+          Donate
+          <ChevronRight className="w-4 h-4" />
+        </Link>
+      ) : (
+        <div className="w-full text-center text-sm text-gray-500 py-2 border-t border-gray-100">
+          Donations closed — thanks for the support!
+        </div>
+      )}
     </div>
   );
 }

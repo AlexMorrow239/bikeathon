@@ -1,5 +1,6 @@
 import { DonationForm } from '@/components/DonationForm';
 import ProgressBar from '@/components/ProgressBar';
+import { DONATIONS_ENABLED } from '@/lib/config';
 import prisma from '@/lib/prisma';
 import { formatCurrency } from '@/lib/utils';
 import Decimal from 'decimal.js';
@@ -69,16 +70,26 @@ export default async function DonatePage({ params }: DonationPageProps) {
           )}
         </div>
 
-        {/* Donation Form */}
         <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-900">Make a Donation</h2>
-          <p className="text-gray-600 mb-4">
-            Every dollar you donate = 1 mile {athlete.name} will ride!
-          </p>
-          <DonationForm
-            athleteId={athlete.id}
-            athleteName={athlete.name}
-          />
+          {DONATIONS_ENABLED ? (
+            <>
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900">Make a Donation</h2>
+              <p className="text-gray-600 mb-4">
+                Every dollar you donate = 1 mile {athlete.name} will ride!
+              </p>
+              <DonationForm
+                athleteId={athlete.id}
+                athleteName={athlete.name}
+              />
+            </>
+          ) : (
+            <>
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900">Donations are closed</h2>
+              <p className="text-gray-600">
+                The Tricanes Bikeathon 2025 has ended. Thank you for supporting {athlete.name}!
+              </p>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import StatsSection from '@/components/StatsSection';
+import { DONATIONS_ENABLED } from '@/lib/config';
 import { Activity, Calendar, DollarSign, MapPin } from 'lucide-react';
 
 interface HeroSectionProps {
@@ -68,13 +69,15 @@ export default function HeroSection({
           <p className="text-base md:text-lg font-semibold text-orange-100 mb-2">
             GO TRI-CANES!
           </p>
-          <a
-            href="#athletes-section"
-            className="inline-flex items-center gap-2 bg-white text-primary-600 px-6 py-2.5 rounded-full font-semibold hover:bg-orange-50 transition-colors"
-          >
-            <DollarSign className="w-4 h-4" />
-            Donate Now
-          </a>
+          {DONATIONS_ENABLED && (
+            <a
+              href="#athletes-section"
+              className="inline-flex items-center gap-2 bg-white text-primary-600 px-6 py-2.5 rounded-full font-semibold hover:bg-orange-50 transition-colors"
+            >
+              <DollarSign className="w-4 h-4" />
+              Donate Now
+            </a>
+          )}
         </div>
       </div>
     </section>

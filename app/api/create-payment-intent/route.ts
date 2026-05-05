@@ -1,11 +1,16 @@
 import prisma from '@/lib/prisma';
 import { paymentIntentSchema } from '@/lib/api/schemas';
 import { error, ok, validationError } from '@/lib/api/responses';
+import { DONATIONS_ENABLED } from '@/lib/config';
 import { formatAmountForStripe, stripe } from '@/lib/stripe-server';
 
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
+  if (!DONATIONS_ENABLED) {
+    return error(410, 'Donations are closed. The event has ended.');
+  }
+
   try {
     const body = await req.json().catch(() => null);
     const parsed = paymentIntentSchema.safeParse(body);
